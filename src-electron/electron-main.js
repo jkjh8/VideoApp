@@ -2,6 +2,7 @@ import { app, BrowserWindow, nativeTheme, protocol } from 'electron'
 import path from 'path'
 import os from 'os'
 import logger from './logger'
+import ipc from './ipc'
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform()

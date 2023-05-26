@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 const vp = ref('')
+const audioOutputDevices = ref([])
 
 const props = defineProps({
   src: String,
@@ -38,26 +39,56 @@ const getReadyState = () => {
   return vp.value.readyState
 }
 
+const getAudioOutputDevices = async () => {
+  const devices = await navigator.mediaDevices.enumerateDevices()
+  audioOutputDevices.value = devices.find(
+    (device) => device.kind === 'audiooutput'
+  )
+  return audioOutputDevices.value
+}
+
+const getAudioOutputDevice = () => {
+  return vp.value.sindId
+}
+
+const setAudioOutputDevice = (deviceId) => {
+  vp.value.setSinkId(deviceId)
+}
+
+const setSource = (src) => {
+  vp.value.src = src
+}
+
+const getSource = () => {
+  return vp.value.currentSrc
+}
+
 defineExpose({
-  getReadyState
+  getReadyState,
+  getAudioOutputDevices,
+  getAudioOutputDevice,
+  setAudioOutputDevice,
+  setSource,
+  getSource
 })
 
 onMounted(async () => {
   const devices = await navigator.mediaDevices.enumerateDevices()
-
-  console.log(devices)
+  audioOutputDevices.value = devices.find(
+    (device) => device.kind === 'audiooutput'
+  )
   const obj = vp.value
   obj.onplaying = (e) => emit('onplaying', e.target.value)
   obj.onabort = () => emit('onabort')
   obj.canplay = (e) => emit('canplay', e.target.value)
-  obj.oncanplaythrough = (e) => emit('canplaythrough', e.target.value)
+  obj.oncanplaythrough = (e) => emit('oncanplaythrough', e.target.value)
   obj.ondurationchange = (e) => emit('ondurationchange', obj.duration)
   obj.onemptied = () => emit('onemptied')
   obj.onencrypted = () => emit('onencrypted')
   obj.onended = () => emit('onended')
   obj.onerror = (e) => emit('onerror', obj.error)
-  obj.onloadeddata = (e) => emit('onloadeddata')
-  obj.onloadedmetadata = (e) => emit('onloadedmetadata')
+  obj.onloadeddata = (e) => emit('onloadeddata', obj.src)
+  obj.onloadedmetadata = (e) => emit('onloadedmetadata', obj.src)
   obj.onloadstart = (e) => emit('onloadstart')
   obj.onpause = (e) => emit('onpause', obj.paused)
   obj.onplay = (e) => emit('onplay')
