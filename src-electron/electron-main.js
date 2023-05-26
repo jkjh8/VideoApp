@@ -44,15 +44,16 @@ function createWindow() {
       mainWindow.webContents.closeDevTools()
     })
   }
-
+  logger.info('APP Started')
   setLocalFileProtocol()
-
   mainWindow.on('closed', () => {
     mainWindow = null
   })
 }
 
-app.whenReady().then(createWindow)
+app.on('ready', () => {
+  createWindow()
+})
 
 app.on('window-all-closed', () => {
   if (platform !== 'darwin') {
@@ -67,13 +68,13 @@ app.on('activate', () => {
 })
 
 function setLocalFileProtocol() {
-  protocol.registerBufferProtocol('local', (request, cb) => {
+  logger.info('Local File Protocol Registerd')
+  protocol.registerFileProtocol('local', (request, callback) => {
     const pathname = decodeURIComponent(request.url.replace('local://', ''))
     try {
-      logger.info('file protocol registered: ' + pathname)
-      cb(pathname)
-    } catch (e) {
-      logger.error('file protocol create failed' + e)
+      callback(pathname)
+    } catch (error) {
+      logger.error('file protocol faild' + error)
     }
   })
 }

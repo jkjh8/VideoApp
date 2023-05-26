@@ -1,10 +1,12 @@
 <script setup>
-import { ref } from 'vue'
-import { QMediaPlayer } from '@quasar/quasar-ui-qmediaplayer'
+import { ref, onMounted } from 'vue'
+import VideoPlayer from 'src/components/VideoPlayer'
 import { sources } from 'src/composables/usePlayer'
-// import '@quasar/quasar-ui-qmediaplayer/src/index.sass'
 
-const VideoPlayer = ref(null)
+const vp = ref(null)
+onMounted(() => {
+  //
+})
 
 const updateDuration = (seconds) => {
   console.log('Duration', seconds)
@@ -18,38 +20,26 @@ const updatePlaybackTime = (cur, remaining) => {
 const loadedmetadata = () => {
   console.log(VideoPlayer.value)
 }
+
+const getStatus = async () => {
+  console.log(await vp.value.getReadyState())
+}
 </script>
 
 <template>
   <q-page class="flex flex-center">
-    <q-media-player
-      ref="VideoPlayer"
-      type="video"
-      :sources="sources"
-      :show-big-play-button="false"
-      :controls-display-time="1000"
-      @ready="console.log('ready')"
-      @canplay="console.log('canplay')"
-      @canplaythrough="console.log('canplaythrough')"
-      @abort="console.log('abort')"
-      @emptied="console.log('emptied')"
-      @duration="updateDuration"
-      @ended="console.log('ended')"
-      @error="onError"
-      @networkState="(state) => console.log('network state', state)"
-      @paused="console.log('paused')"
-      @playing="console.log('playing')"
-      @play="console.log('play')"
-      @stalled="console.log('stalled')"
-      @suspend="console.log('suspend')"
-      @timeupdate="updatePlaybackTime"
-      @fullscreen="(showing) => console.log('fullscreen', showing)"
-      @loadeddata="console.log('loadeddata')"
-      @loadstart="console.log('loadstart')"
-      @volume="(volume) => console.log('volume', volume)"
-      @muted="(muted) => console.log('muted', muted)"
-      @loadedmetadata="loadedmetadata"
+    <VideoPlayer
+      ref="vp"
+      style="width: 100%"
+      :src="sources[0].src"
+      controls
+      @onplaying="console.log('onplaying')"
+      @ondurationchange="(time) => console.log('duration', time)"
+      @ontimeupdate="
+        (time, remaining) => console.log('timeupdate', time, remaining)
+      "
     />
+    <q-btn class="bg-white" rounded @click="getStatus">GET STATE</q-btn>
   </q-page>
 </template>
 
