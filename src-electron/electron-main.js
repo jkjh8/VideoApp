@@ -1,19 +1,22 @@
-import { app, BrowserWindow, nativeTheme } from 'electron'
+import { app, BrowserWindow, nativeTheme, protocol } from 'electron'
 import path from 'path'
 import os from 'os'
+import logger from './logger'
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform()
 
 try {
   if (platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
-    require('fs').unlinkSync(path.join(app.getPath('userData'), 'DevTools Extensions'))
+    require('fs').unlinkSync(
+      path.join(app.getPath('userData'), 'DevTools Extensions')
+    )
   }
-} catch (_) { }
+} catch (_) {}
 
 let mainWindow
 
-function createWindow () {
+function createWindow() {
   /**
    * Initial window options
    */
@@ -24,6 +27,7 @@ function createWindow () {
     useContentSize: true,
     webPreferences: {
       contextIsolation: true,
+      sandbox: false,
       // More info: https://v2.quasar.dev/quasar-cli-webpack/developing-electron-apps/electron-preload-script
       preload: path.resolve(__dirname, process.env.QUASAR_ELECTRON_PRELOAD)
     }
@@ -40,6 +44,8 @@ function createWindow () {
       mainWindow.webContents.closeDevTools()
     })
   }
+
+  setLocalFileProtocol()
 
   mainWindow.on('closed', () => {
     mainWindow = null
@@ -59,3 +65,15 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+function setLocalFileProtocol() {
+  protocol.registerBufferProtocol('local', (request, cb) => {
+    const pathname = decodeURIComponent(request.url.replace('local://', ''))
+    try {
+      logger.info('file protocol registered: ' + pathname)
+      cb(pathname)
+    } catch (e) {
+      logger.error('file protocol create failed' + e)
+    }
+  })
+}
