@@ -1,5 +1,7 @@
 import { app, Menu, BrowserWindow as bw } from 'electron'
 import { getFileDialog } from '../functions/files'
+import { getMetaData } from '../functions/ffmpeg'
+
 const isMac = process.platform === 'darwin'
 
 const template = [
@@ -31,7 +33,7 @@ const template = [
         accelerator: 'CommandOrControl+o',
         click: async () => {
           const file = await getFileDialog()
-          console.log(file)
+          getMetaData(file[0])
           bw.fromId(1).webContents.send('open', {
             type: 'video',
             value: file[0]

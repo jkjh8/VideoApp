@@ -3,6 +3,8 @@ import path from 'path'
 import os from 'os'
 import logger from './logger'
 
+global.playerValues = {}
+
 import './ipc'
 import './menu'
 

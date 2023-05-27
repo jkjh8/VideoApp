@@ -2,7 +2,6 @@ import path from 'node:path'
 import fs from 'node:fs'
 import { BrowserWindow as bw, ipcMain, dialog } from 'electron'
 import logger from '../logger'
-import { duration, times } from '../playerValues'
 
 ipcMain.on('log', (e, args) => {
   switch (args.level) {
@@ -18,26 +17,28 @@ ipcMain.on('log', (e, args) => {
 })
 
 ipcMain.on('updateDuration', (e, time) => {
-  duration = time
-  logger.info('update duration', duration)
+  playerValues.duration = time
+  logger.info('update duration', playerValues)
 })
 
 ipcMain.on('updateTimes', (e, cur, remain) => {
-  times.cur = cur
-  times.remain = remain
-  console.log('times', times)
+  playerValues.currentTime = cur
+  playerValues.remaining = remain
+  console.log('times', playerValues)
 })
 
 ipcMain.on('updateState', (e, args) => {
   switch (args.event) {
     case 'loadeddata':
     case 'loadedmetadata':
-    case 'ratechange':
-    case 'volumechanged':
-      logger.info(`${args.event}: ${args.value}`)
+      playerValues.src = args.value
       break
-    default:
-      logger.info(args.event)
+    case 'ratechange':
+      playerValues.rate = args.value
+      break
+    case 'volumechanged':
+      playerValues.volume = args.value
       break
   }
+  logger.info(`${args.event}: ${args.value}`)
 })

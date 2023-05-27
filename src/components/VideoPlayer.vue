@@ -31,7 +31,8 @@ const emit = defineEmits([
   'onstalled',
   'onsuspend',
   'ontimeupdate',
-  'onwaiting'
+  'onwaiting',
+  'onvolumechange'
 ])
 
 const getReadyState = () => {
@@ -61,6 +62,14 @@ const setSource = (src) => {
 
 const getSource = () => {
   return vp.value.currentSrc
+}
+
+const volumechanged = () => {
+  if (vp.value.muted) {
+    emit('onvolumechange', 0)
+  } else {
+    emit('onvolumechange', vp.value.volume)
+  }
 }
 
 defineExpose({
@@ -100,7 +109,7 @@ onMounted(async () => {
   obj.onsuspend = (e) => emit('onsuspend')
   obj.ontimeupdate = (e) =>
     emit('ontimeupdate', obj.currentTime, obj.duration - obj.currentTime)
-  obj.onvolumechange = (e) => emit('onvolumechange', obj.volume)
+  obj.onvolumechange = (e) => volumechanged(e)
   obj.onwaiting = (e) => emit('onwaiting')
 })
 </script>
