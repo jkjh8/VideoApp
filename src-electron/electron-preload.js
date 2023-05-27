@@ -15,5 +15,10 @@ contextBridge.exposeInMainWorld('myAPI', {
   },
   updateState: (args) => {
     ipcRenderer.send('updateState', { ...args })
+  },
+  open: (fn) => {
+    ipcRenderer.on('open', (e, ...args) => {
+      fn(...args)
+    })
   }
 })

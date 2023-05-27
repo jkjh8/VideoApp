@@ -6,7 +6,9 @@ import { sources } from 'src/composables/usePlayer'
 
 const vp = ref(null)
 onMounted(() => {
-  //
+  myAPI.open((args) => {
+    vp.value.setSource(`local://${args.value}`)
+  })
 })
 
 const updateDuration = (seconds) => {
