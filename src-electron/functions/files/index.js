@@ -8,9 +8,9 @@ const getFileDialog = async () => {
     filters: [
       {
         name: 'Media',
-        extensions: ['wav', 'mp3', 'mp4', 'mkv', 'jpg', 'bmp', 'gif']
+        extensions: ['wav', 'mp3', 'mp4', 'mkv', 'mov', 'jpg', 'bmp', 'gif']
       },
-      { name: 'Video', extensions: ['mp4', 'mkv'] },
+      { name: 'Video', extensions: ['mp4', 'mkv', 'mov'] },
       { name: 'Audio', extensions: ['mp3', 'wav'] },
       { name: 'Image', extensions: ['jpg', 'bmp'] },
       { name: 'All Files', extensions: ['*'] }

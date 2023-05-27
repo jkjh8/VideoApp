@@ -13,4 +13,6 @@ const sources = ref([
   }
 ])
 
-export { source, sources }
+const playerValues = ref({})
+
+export { source, sources, playerValues }

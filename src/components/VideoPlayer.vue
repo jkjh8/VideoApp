@@ -1,42 +1,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-const vp = ref('')
-const audioOutputDevices = ref([])
 
 const props = defineProps({
   src: String,
-  controls: { type: Boolean, default: false },
-  autoplay: { type: Boolean, default: false }
+  controls: { type: Boolean, default: false }
 })
 
-const emit = defineEmits([
-  'onplaying',
-  'onabort',
-  'canplay',
-  'oncanplaythrough',
-  'ondurationchange',
-  'onemptied',
-  'onencrypted',
-  'onended',
-  'oneror',
-  'onloadeddata',
-  'onloadedmetadata',
-  'onloadstart',
-  'onpause',
-  'onplay',
-  'onprogress',
-  'onratechange',
-  'onseeked',
-  'onseeking',
-  'onstalled',
-  'onsuspend',
-  'ontimeupdate',
-  'onwaiting',
-  'onvolumechange'
-])
+const vp = ref(null)
+const audioOutputDevices = ref([])
 
 const getReadyState = () => {
-  console.log(vp.value.sinkId)
   return vp.value.readyState
 }
 
@@ -51,35 +24,24 @@ const getAudioOutputDevices = async () => {
 const getAudioOutputDevice = () => {
   return vp.value.sindId
 }
-
-const setAudioOutputDevice = (deviceId) => {
-  vp.value.setSinkId(deviceId)
-}
-
-const setSource = (src) => {
-  vp.value.src = src
-}
-
+const setAudioOutputDevice = (deviceId) => vp.value.setSinkId(deviceId)
+const setSource = (src) => (vp.value.src = src)
 const getSource = () => {
   return vp.value.currentSrc
 }
 
 const volumechanged = () => {
   if (vp.value.muted) {
-    emit('onvolumechange', 0)
+    upv({ type: 'volumechanged', value: 0 })
   } else {
-    emit('onvolumechange', vp.value.volume)
+    upv({ type: 'volumechanged', value: vp.value.volume })
   }
 }
 
-defineExpose({
-  getReadyState,
-  getAudioOutputDevices,
-  getAudioOutputDevice,
-  setAudioOutputDevice,
-  setSource,
-  getSource
-})
+const play = () => vp.value.play()
+const pause = () => vp.value.pause()
+
+const upv = (args) => myAPI.updateState({ ...args })
 
 onMounted(async () => {
   const devices = await navigator.mediaDevices.enumerateDevices()
@@ -87,35 +49,56 @@ onMounted(async () => {
     (device) => device.kind === 'audiooutput'
   )
   const obj = vp.value
-  obj.onplaying = (e) => emit('onplaying', e.target.value)
-  obj.onabort = () => emit('onabort')
-  obj.canplay = (e) => emit('canplay', e.target.value)
-  obj.oncanplaythrough = (e) => emit('oncanplaythrough', e.target.value)
-  obj.ondurationchange = (e) => emit('ondurationchange', obj.duration)
-  obj.onemptied = () => emit('onemptied')
-  obj.onencrypted = () => emit('onencrypted')
-  obj.onended = () => emit('onended')
-  obj.onerror = (e) => emit('onerror', obj.error)
-  obj.onloadeddata = (e) => emit('onloadeddata', obj.src)
-  obj.onloadedmetadata = (e) => emit('onloadedmetadata', obj.src)
-  obj.onloadstart = (e) => emit('onloadstart')
-  obj.onpause = (e) => emit('onpause', obj.paused)
-  obj.onplay = (e) => emit('onplay')
-  obj.onprogress = (e) => emit('onprogress', e.target.value)
-  obj.onratechange = (e) => emit('onratechange', obj.playbackRate)
-  obj.onseeked = (e) => emit('onseeked')
-  obj.onseeking = (e) => emit('onseeking')
-  obj.onstalled = (e) => emit('onstalled')
-  obj.onsuspend = (e) => emit('onsuspend')
+  obj.onplaying = (e) => upv({ type: 'playing' })
+  obj.onabort = () => upv({ type: 'abort' })
+  obj.canplay = (e) => upv({ type: 'canplay' })
+  obj.oncanplaythrough = (e) =>
+    upv({ type: 'canplaythrough', value: e.target.value })
+  obj.ondurationchange = (e) =>
+    upv({ type: 'durationchange', value: obj.duration })
+  obj.onemptied = () => upv({ type: 'emptied' })
+  obj.onencrypted = () => upv({ type: 'encrypted' })
+  obj.onended = () => upv({ type: 'ended' })
+  obj.onerror = (e) => upv({ type: 'error', value: obj.error })
+  obj.onloadeddata = (e) => upv({ type: 'loadeddata', value: obj.src })
+  obj.onloadedmetadata = (e) => upv({ type: 'loadedmetadata', value: obj.src })
+  obj.onloadstart = (e) => upv({ type: 'loadstart' })
+  obj.onpause = (e) => upv({ type: 'pause' })
+  obj.onplay = (e) => upv({ type: 'play' })
+  // obj.onprogress = (e) => upv({ type: 'progress', value: e.target.value })
+  obj.onratechange = (e) => upv({ type: 'ratechange', value: obj.playbackRate })
+  obj.onseeked = (e) => upv({ type: 'seeked' })
+  obj.onseeking = (e) => upv({ type: 'seeking' })
+  obj.onstalled = (e) => upv({ type: 'stalled' })
+  obj.onsuspend = (e) => upv({ type: 'suspend' })
   obj.ontimeupdate = (e) =>
-    emit('ontimeupdate', obj.currentTime, obj.duration - obj.currentTime)
+    upv({
+      type: 'timeupdate',
+      cur: obj.currentTime,
+      remain: obj.duration - obj.currentTime
+    })
   obj.onvolumechange = (e) => volumechanged(e)
-  obj.onwaiting = (e) => emit('onwaiting')
+  obj.onwaiting = (e) => upv({ type: 'waiting' })
+
+  myAPI.open((args) => {
+    obj.src = `local://${args.value}`
+  })
+})
+
+defineExpose({
+  getReadyState,
+  getAudioOutputDevices,
+  getAudioOutputDevice,
+  setAudioOutputDevice,
+  setSource,
+  getSource,
+  play,
+  pause
 })
 </script>
 
 <template>
-  <video ref="vp" :src="props.src" :autoplay="autoplay" :controls="controls" />
+  <video ref="vp" :src="props.src" :controls="controls" />
 </template>
 
 <style scoped></style>

@@ -7,18 +7,17 @@ contextBridge.exposeInMainWorld('myAPI', {
   writeLogs: (args) => {
     ipcRenderer.send('log', { ...args })
   },
-  updateDuration: (time) => {
-    ipcRenderer.send('updateDuration', time)
-  },
-  updateTimes: (cur, remaining) => {
-    ipcRenderer.send('updateTimes', cur, remaining)
-  },
   updateState: (args) => {
     ipcRenderer.send('updateState', { ...args })
   },
   open: (fn) => {
     ipcRenderer.on('open', (e, ...args) => {
       fn(...args)
+    })
+  },
+  rtPlayerValues: (fn) => {
+    ipcRenderer.on('rtPlayerValues', (e, value) => {
+      fn(value)
     })
   }
 })

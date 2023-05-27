@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { app, Menu, BrowserWindow as bw } from 'electron'
 import { getFileDialog } from '../functions/files'
 import { getMetaData } from '../functions/ffmpeg'
@@ -32,14 +33,21 @@ const template = [
         label: 'Open',
         accelerator: 'CommandOrControl+o',
         click: async () => {
+          // open file dialog
           const file = await getFileDialog()
+          // 파일이름 추출
+          const parsedFile = path.parse(file[0])
+          playerValues.file_name = parsedFile.name + parsedFile.ext
+          // metadata 확인
           getMetaData(file[0])
+          // 비디오 파일 로딩
           bw.fromId(1).webContents.send('open', {
             type: 'video',
-            value: file[0]
+            value: encodeURIComponent(file[0])
           })
         }
       },
+      { type: 'separator' },
       { role: 'quit', accelerator: 'CommandOrControl+f4' }
     ]
   },
