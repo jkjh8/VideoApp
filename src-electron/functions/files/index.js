@@ -1,8 +1,10 @@
 import path from 'node:path'
-import db from '/src-electron/db'
 import { dialog, BrowserWindow as bw } from 'electron'
 import ffmpeg from 'fluent-ffmpeg'
+import sizeOf from 'image-size'
+
 import logger from '/src-electron/logger'
+import db from '/src-electron/db'
 
 const FfmpegPath = require('ffmpeg-static').replace(
   'app.asar',
@@ -46,13 +48,14 @@ const getFileDialog = async () => {
 
 const getMetaData = (file) => {
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject(new Error('timeout'))
-    }, 5000)
-    ffmpeg.ffprobe(file, (err, meta) => {
-      if (err) reject(new Error('metadata read error'))
-      resolve(meta)
-    })
+    try {
+      ffmpeg.ffprobe(file, (err, meta) => {
+        if (err) reject(new Error('metadata read error'))
+        resolve(meta)
+      })
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 
@@ -87,7 +90,8 @@ const openFile = async (filePath) => {
       case '.png':
       case '.bmp':
       case '.gif':
-        playerValues = { mode: 'image', ...playerValues }
+        const dimensions = sizeOf(filePath)
+        playerValues = { mode: 'image', ...playerValues, ...dimensions }
     }
 
     // send player data to frontend

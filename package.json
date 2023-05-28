@@ -19,6 +19,7 @@
     "ffmpeg-static": "^5.1.0",
     "ffprobe-static": "^3.1.0",
     "fluent-ffmpeg": "^2.1.2",
+    "image-size": "^1.0.2",
     "nedb-promises": "^6.2.1",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
