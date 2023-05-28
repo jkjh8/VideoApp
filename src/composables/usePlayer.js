@@ -15,4 +15,5 @@ const sources = ref([
 
 const playerValues = ref({})
 const playerMode = ref('logo')
-export { source, sources, playerValues, playerMode }
+const bgColor = ref('#fff')
+export { source, sources, playerValues, playerMode, bgColor }

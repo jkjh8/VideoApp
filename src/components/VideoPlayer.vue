@@ -41,6 +41,7 @@ const volumechanged = () => {
 
 const play = () => vp.value.play()
 const pause = () => vp.value.pause()
+const load = () => vp.value.load()
 
 const upv = (args) => myAPI.updateState({ ...args })
 
@@ -106,11 +107,6 @@ onMounted(async () => {
     })
   obj.onvolumechange = (e) => volumechanged(e)
   obj.onwaiting = (e) => upv({ type: 'waiting', readyState: obj.readyState })
-
-  // myAPI.open((args) => {
-  //   console.log(args)
-  //   obj.src = `local://${args.src}`
-  // })
 })
 
 defineExpose({

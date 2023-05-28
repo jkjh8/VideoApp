@@ -19,7 +19,7 @@ onMounted(() => {
         break
       case 'audio':
         playerMode.value = 'audio'
-        audioSource.value = `local://${args.src}`
+        videoSource.value = `local://${args.src}`
         break
       case 'image':
         playerMode.value = 'image'
@@ -42,15 +42,9 @@ onMounted(() => {
       :source="videoSource"
       controls
     />
-    <audio v-if="playerMode === 'audio'" controls :src="audioSource" />
-    <q-img
-      v-if="playerMode === 'image'"
-      style="width=100%"
-      :src="imageSource"
-    />
+    <q-img v-if="playerMode === 'image'" fit="cover" :src="imageSource" />
+    <img v-if="playerMode === 'logo'" src="logo.png" />
     <q-btn color="yellow" @click="console.log(playerValues)">check</q-btn>
-    <q-btn color="green" icon="play_arrow" @click="vp.play()" />
-    <q-btn color="red" icon="pause" @click="vp.pause()" />
   </q-page>
 </template>
 
