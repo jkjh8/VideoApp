@@ -7,6 +7,7 @@
 
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js
+const path = require('path')
 
 const ESLintPlugin = require('eslint-webpack-plugin')
 

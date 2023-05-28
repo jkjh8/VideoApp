@@ -4,7 +4,11 @@ import os from 'os'
 import logger from './logger'
 
 global.playerValues = {}
-
+global.playerTimes = {
+  duration: 0,
+  currentTime: 0,
+  remaining: 0
+}
 import './ipc'
 import './menu'
 

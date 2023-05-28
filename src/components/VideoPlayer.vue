@@ -32,9 +32,9 @@ const getSource = () => {
 
 const volumechanged = () => {
   if (vp.value.muted) {
-    upv({ type: 'volumechanged', value: 0 })
+    upv({ type: 'volumechanged', volume: 0 })
   } else {
-    upv({ type: 'volumechanged', value: vp.value.volume })
+    upv({ type: 'volumechanged', volume: vp.value.volume })
   }
 }
 
@@ -49,39 +49,65 @@ onMounted(async () => {
     (device) => device.kind === 'audiooutput'
   )
   const obj = vp.value
-  obj.onplaying = (e) => upv({ type: 'playing' })
-  obj.onabort = () => upv({ type: 'abort' })
-  obj.canplay = (e) => upv({ type: 'canplay' })
+  obj.onplaying = (e) =>
+    upv({ type: 'playing', play: 1, readyState: obj.readyState })
+  obj.onabort = () =>
+    upv({ type: 'abort', play: 0, readyState: obj.readyState })
+  obj.canplay = (e) =>
+    upv({ type: 'canplay', play: 0, readyState: obj.readyState })
   obj.oncanplaythrough = (e) =>
-    upv({ type: 'canplaythrough', value: e.target.value })
+    upv({ type: 'canplaythrough', play: 0, readyState: obj.readyState })
   obj.ondurationchange = (e) =>
-    upv({ type: 'durationchange', value: obj.duration })
-  obj.onemptied = () => upv({ type: 'emptied' })
-  obj.onencrypted = () => upv({ type: 'encrypted' })
-  obj.onended = () => upv({ type: 'ended' })
-  obj.onerror = (e) => upv({ type: 'error', value: obj.error })
-  obj.onloadeddata = (e) => upv({ type: 'loadeddata', value: obj.src })
-  obj.onloadedmetadata = (e) => upv({ type: 'loadedmetadata', value: obj.src })
-  obj.onloadstart = (e) => upv({ type: 'loadstart' })
-  obj.onpause = (e) => upv({ type: 'pause' })
-  obj.onplay = (e) => upv({ type: 'play' })
+    upv({
+      type: 'durationchange',
+      duration: obj.duration,
+      readyState: obj.readyState
+    })
+  obj.onemptied = () =>
+    upv({ type: 'emptied', play: 0, readyState: obj.readyState })
+  obj.onencrypted = () => upv({ type: 'encrypted', readyState: obj.readyState })
+  obj.onended = () =>
+    upv({ type: 'ended', play: 0, readyState: obj.readyState })
+  obj.onerror = (e) =>
+    upv({ type: 'error', errpr: obj.error, readyState: obj.readyState })
+  obj.onloadeddata = (e) =>
+    upv({
+      type: 'loadeddata',
+      src: obj.src,
+      play: 0,
+      readyState: obj.readyState
+    })
+  obj.onloadedmetadata = (e) =>
+    upv({
+      type: 'loadedmetadata',
+      src: obj.src,
+      play: 0,
+      readyState: obj.readyState
+    })
+  obj.onloadstart = (e) =>
+    upv({ type: 'loadstart', play: 0, readyState: obj.readyState })
+  obj.onpause = (e) =>
+    upv({ type: 'pause', play: 2, readyState: obj.readyState })
+  obj.onplay = (e) => upv({ type: 'play', play: 1, readyState: obj.readyState })
   // obj.onprogress = (e) => upv({ type: 'progress', value: e.target.value })
-  obj.onratechange = (e) => upv({ type: 'ratechange', value: obj.playbackRate })
-  obj.onseeked = (e) => upv({ type: 'seeked' })
-  obj.onseeking = (e) => upv({ type: 'seeking' })
-  obj.onstalled = (e) => upv({ type: 'stalled' })
-  obj.onsuspend = (e) => upv({ type: 'suspend' })
+  obj.onratechange = (e) => upv({ type: 'ratechange', rate: obj.playbackRate })
+  obj.onseeked = (e) => upv({ type: 'seeked', readyState: obj.readyState })
+  obj.onseeking = (e) => upv({ type: 'seeking', readyState: obj.readyState })
+  obj.onstalled = (e) =>
+    upv({ type: 'stalled', play: 0, readyState: obj.readyState })
+  obj.onsuspend = (e) =>
+    upv({ type: 'suspend', play: 0, readyState: obj.readyState })
   obj.ontimeupdate = (e) =>
     upv({
       type: 'timeupdate',
-      cur: obj.currentTime,
-      remain: obj.duration - obj.currentTime
+      currentTime: obj.currentTime,
+      remaining: obj.duration - obj.currentTime
     })
   obj.onvolumechange = (e) => volumechanged(e)
-  obj.onwaiting = (e) => upv({ type: 'waiting' })
+  obj.onwaiting = (e) => upv({ type: 'waiting', readyState: obj.readyState })
 
   myAPI.open((args) => {
-    obj.src = `local://${args.value}`
+    obj.src = `local://${args.src}`
   })
 })
 

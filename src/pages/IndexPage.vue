@@ -28,7 +28,7 @@ const updateState = (state, value) => {
 
 <template>
   <q-page class="flex flex-center">
-    <VideoPlayer ref="vp" style="width: 100%" />
+    <VideoPlayer ref="vp" style="width: 100%" controls />
     <q-btn color="yellow" @click="console.log(playerValues)">check</q-btn>
     <q-btn color="green" icon="play_arrow" @click="vp.play()" />
     <q-btn color="red" icon="pause" @click="vp.pause()" />
