@@ -27,7 +27,7 @@ ipcMain.on('updateState', (e, args) => {
     case 'playing':
     case 'play':
       updateValues(args)
-      logger.info(`${args.type} file: ${playerValues.file_name}`)
+      logger.info(`${args.type} file: ${playerValues.name}`)
       break
     case 'error':
       logger.error(`player error: ${args.value}`)

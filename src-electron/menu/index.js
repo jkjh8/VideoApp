@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { app, Menu, BrowserWindow as bw } from 'electron'
-import { openFile } from '../functions/files'
+import { openFileDialog } from '../functions/files'
 
 const isMac = process.platform === 'darwin'
 
@@ -31,7 +31,7 @@ const template = [
       {
         label: 'Open',
         accelerator: 'CommandOrControl+o',
-        click: async () => await openFile()
+        click: async () => await openFileDialog()
       },
       { type: 'separator' },
       { role: 'quit', accelerator: 'CommandOrControl+f4' }

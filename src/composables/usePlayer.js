@@ -14,5 +14,5 @@ const sources = ref([
 ])
 
 const playerValues = ref({})
-
-export { source, sources, playerValues }
+const playerMode = ref('logo')
+export { source, sources, playerValues, playerMode }

@@ -3,7 +3,8 @@ import { ref, onMounted } from 'vue'
 
 const props = defineProps({
   src: String,
-  controls: { type: Boolean, default: false }
+  controls: { type: Boolean, default: false },
+  source: String
 })
 
 const vp = ref(null)
@@ -106,9 +107,10 @@ onMounted(async () => {
   obj.onvolumechange = (e) => volumechanged(e)
   obj.onwaiting = (e) => upv({ type: 'waiting', readyState: obj.readyState })
 
-  myAPI.open((args) => {
-    obj.src = `local://${args.src}`
-  })
+  // myAPI.open((args) => {
+  //   console.log(args)
+  //   obj.src = `local://${args.src}`
+  // })
 })
 
 defineExpose({
@@ -124,7 +126,7 @@ defineExpose({
 </script>
 
 <template>
-  <video ref="vp" :src="props.src" :controls="controls" />
+  <video ref="vp" :src="props.source" :controls="controls" />
 </template>
 
 <style scoped></style>
