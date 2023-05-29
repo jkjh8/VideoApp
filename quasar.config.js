@@ -47,6 +47,7 @@ module.exports = configure(function (ctx) {
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
 
+      env: require('dotenv').config().parsed,
       // transpile: false,
       // publicPath: '/',
 
@@ -98,7 +99,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: ['Dialog', 'Loading']
     },
 
     // animations: 'all', // --- includes all animations

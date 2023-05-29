@@ -11,6 +11,7 @@ global.playerTimes = {
 }
 import './ipc'
 import './menu'
+import './web'
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform()
