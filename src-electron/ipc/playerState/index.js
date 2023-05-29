@@ -36,6 +36,14 @@ ipcMain.on('updateState', (e, args) => {
       updateValues(args)
       logger.warn(args.type)
       break
+    case 'ended':
+      updateValues(args)
+      logger.info(args.type)
+      bw.fromId(1).webContents.send('command', {
+        command: 'ended',
+        mode: playerValues.mode
+      })
+      break
     default:
       updateValues(args)
       logger.info(args.type)

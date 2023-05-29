@@ -30,22 +30,52 @@ onMounted(() => {
   myAPI.rtPlayerValues((args) => {
     playerValues.value = args
   })
+  myAPI.command((args) => {
+    switch (args.command) {
+      case 'ended':
+        playerMode.value = 'logo'
+        break
+    }
+  })
 })
 </script>
 
 <template>
   <q-page class="flex flex-center">
-    <VideoPlayer
-      v-if="playerMode === 'video'"
-      ref="vp"
-      style="width: 100%"
-      :source="videoSource"
-      controls
-    />
-    <q-img v-if="playerMode === 'image'" fit="cover" :src="imageSource" />
-    <img v-if="playerMode === 'logo'" src="logo.png" />
-    <q-btn color="yellow" @click="console.log(playerValues)">check</q-btn>
+    <!-- video & audio player -->
+    <Transition>
+      <VideoPlayer
+        v-show="playerMode === 'video'"
+        ref="vp"
+        style="width: 100%"
+        :source="videoSource"
+        controls
+      />
+    </Transition>
+    <!-- image -->
+    <Transition>
+      <q-img v-if="playerMode === 'image'" fit="cover" :src="imageSource" />
+    </Transition>
+    <!-- logo -->
+    <Transition>
+      <img v-if="playerMode === 'logo'" src="logo.png" />
+    </Transition>
+    <!-- test buttons -->
+    <div class="q-gutter-md">
+      <q-btn color="yellow" @click="console.log(playerValues)">check</q-btn>
+      <q-btn color="red" @click="playerMode = 'logo'">STOP</q-btn>
+    </div>
   </q-page>
 </template>
 
-<style scoped></style>
+<style scoped>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>

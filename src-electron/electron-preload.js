@@ -18,6 +18,11 @@ contextBridge.exposeInMainWorld('myAPI', {
       fn(...args)
     })
   },
+  command: (fn) => {
+    ipcRenderer.on('command', (e, ...args) => {
+      fn(...args)
+    })
+  },
   rtPlayerValues: (fn) => {
     ipcRenderer.on('rtPlayerValues', (e, value) => {
       fn(value)
