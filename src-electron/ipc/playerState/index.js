@@ -58,6 +58,7 @@ const updateValues = (args) => {
       playerValues[key] = args[key]
     }
   }
+  io.emit('playerstate', playerValues)
 }
 
 const updateTimes = (args) => {
@@ -66,4 +67,5 @@ const updateTimes = (args) => {
       playerTimes[key] = args[key]
     }
   }
+  io.emit('times', playerTimes)
 }
