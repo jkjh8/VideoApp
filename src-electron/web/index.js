@@ -9,6 +9,7 @@ import httpLogger from 'morgan'
 import session from 'express-session'
 
 import logger from '/src-electron/logger'
+import { playerCommand } from './command'
 import routes from './routes'
 
 import * as dotenv from 'dotenv'
@@ -59,6 +60,9 @@ io.on('connection', (socket) => {
   io.emit('playerstate', playerValues)
   io.emit('times', playerTimes)
   logger.info(`connection socket.io id=${socket.id}`)
+  socket.on('playcommand', (args) => {
+    playerCommand(args)
+  })
 })
 
 server.listen(HTTP_PORT, () => {

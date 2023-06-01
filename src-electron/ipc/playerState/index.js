@@ -37,7 +37,7 @@ ipcMain.on('updateState', (e, args) => {
       logger.warn(args.type)
       break
     case 'ended':
-      updateValues(args)
+      updateValues({ ...args, playbtn: false })
       logger.info(args.type)
       bw.fromId(1).webContents.send('command', {
         command: 'ended',
@@ -46,7 +46,7 @@ ipcMain.on('updateState', (e, args) => {
       break
     default:
       updateValues(args)
-      logger.info(args.type)
+      // logger.info(args.type)
       break
   }
   bw.fromId(1).webContents.send('rtPlayerValues', playerValues)

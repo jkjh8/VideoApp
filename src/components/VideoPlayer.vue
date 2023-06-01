@@ -1,5 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { playerValues, playerMode } from 'src/composables/usePlayer.js'
+
+const panStatus = ref(false)
 
 const props = defineProps({
   src: String,
@@ -39,6 +42,14 @@ const volumechanged = () => {
   }
 }
 
+const updateTimes = () => {
+  upv({
+    type: 'timeupdate',
+    currentTime: vp.value.currentTime,
+    remaining: vp.value.duration - vp.value.currentTime
+  })
+}
+
 const play = () => vp.value.play()
 const pause = () => vp.value.pause()
 const load = () => vp.value.load()
@@ -50,6 +61,8 @@ onMounted(async () => {
   audioOutputDevices.value = devices.find(
     (device) => device.kind === 'audiooutput'
   )
+
+  // callback events
   const obj = vp.value
   obj.onplaying = (e) =>
     upv({ type: 'playing', play: 1, readyState: obj.readyState })
@@ -93,20 +106,41 @@ onMounted(async () => {
   obj.onplay = (e) => upv({ type: 'play', play: 1, readyState: obj.readyState })
   // obj.onprogress = (e) => upv({ type: 'progress', value: e.target.value })
   obj.onratechange = (e) => upv({ type: 'ratechange', rate: obj.playbackRate })
-  obj.onseeked = (e) => upv({ type: 'seeked', readyState: obj.readyState })
-  obj.onseeking = (e) => upv({ type: 'seeking', readyState: obj.readyState })
+  // obj.onseeked = (e) => upv({ type: 'seeked', readyState: obj.readyState })
+  // obj.onseeking = (e) => upv({ type: 'seeking', readyState: obj.readyState })
   obj.onstalled = (e) =>
     upv({ type: 'stalled', play: 0, readyState: obj.readyState })
   obj.onsuspend = (e) =>
     upv({ type: 'suspend', play: 0, readyState: obj.readyState })
-  obj.ontimeupdate = (e) =>
-    upv({
-      type: 'timeupdate',
-      currentTime: obj.currentTime,
-      remaining: obj.duration - obj.currentTime
-    })
+  obj.ontimeupdate = (e) => updateTimes()
   obj.onvolumechange = (e) => volumechanged(e)
   obj.onwaiting = (e) => upv({ type: 'waiting', readyState: obj.readyState })
+
+  // player Commands
+  myAPI.playerCommand((args) => {
+    switch (args.command) {
+      case 'seek':
+        obj.currentTime = args.seekTime
+        break
+      case 'pan':
+        if (args.value === 'start') {
+          panStatus.value = obj.paused
+          pause()
+        } else {
+          if (!panStatus.value) {
+            play()
+          }
+        }
+        break
+      case 'play':
+        playerMode.value = playerValues.value.mode
+        play()
+        break
+      case 'pause':
+        pause()
+        break
+    }
+  })
 })
 
 defineExpose({
