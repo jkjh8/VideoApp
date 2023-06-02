@@ -50,7 +50,6 @@ onMounted(() => {
         ref="vp"
         style="width: 100%"
         :source="videoSource"
-        controls
       />
     </Transition>
     <!-- image -->
@@ -65,11 +64,6 @@ onMounted(() => {
         src="harman-logo.svg"
       />
     </Transition>
-    <!-- test buttons -->
-    <div class="q-gutter-md">
-      <q-btn color="yellow" @click="console.log(playerValues)">check</q-btn>
-      <q-btn color="red" @click="playerMode = 'logo'">STOP</q-btn>
-    </div>
   </q-page>
 </template>
 

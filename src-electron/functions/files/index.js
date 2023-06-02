@@ -46,7 +46,7 @@ const getFileDialog = async () => {
   })
 }
 
-const getMetaData = (file) => {
+const getMetaDataPromise = (file) => {
   return new Promise((resolve, reject) => {
     try {
       ffmpeg.ffprobe(file, (err, meta) => {
@@ -56,6 +56,17 @@ const getMetaData = (file) => {
     } catch (error) {
       reject(error)
     }
+  })
+}
+
+const getMetaData = (file) => {
+  ffmpeg.ffprobe(file, (err, meta) => {
+    ffmpeg.ffprobe(file, (err, meta) => {
+      if (err) reject(new Error('metadata read error'))
+      playerValues = { ...playerValues, ...meta }
+      io.emit('playerstate', playerValues)
+      bw.fromId(1).webContents.send('updateState', playerValues)
+    })
   })
 }
 
@@ -77,13 +88,13 @@ const openFile = async (filePath) => {
       case '.mp4':
       case '.mov':
       case '.mkv':
-        fileMetaData = await getMetaData(filePath)
-        playerValues = { mode: 'video', ...playerValues, ...fileMetaData }
+        getMetaData(filePath)
+        playerValues = { mode: 'video', ...playerValues }
         break
       case '.mp3':
       case '.wav':
-        fileMetaData = await getMetaData(filePath)
-        playerValues = { mode: 'audio', ...playerValues, ...fileMetaData }
+        getMetaData(filePath)
+        playerValues = { mode: 'audio', ...playerValues }
         break
       case '.jpg':
       case '.jpeg':
