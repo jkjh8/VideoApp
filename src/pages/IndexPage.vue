@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import VideoPlayer from 'src/components/VideoPlayer'
 import { info, warn, error } from 'src/composables/useLogger'
-import { playerValues, playerMode } from 'src/composables/usePlayer'
+import { pStatus, pMode } from 'src/composables/usePlayer'
 
 const vp = ref(null)
 const videoSource = ref('')
@@ -11,30 +11,30 @@ const audioSource = ref('')
 
 onMounted(() => {
   myAPI.open((args) => {
-    playerValues.value = { ...args.values }
+    pStatus.value = { ...args.values }
     switch (args.mode) {
       case 'video':
-        playerMode.value = 'video'
+        pMode.value = 'video'
         videoSource.value = `local://${args.src}`
         break
       case 'audio':
-        playerMode.value = 'audio' // audio mode
+        pMode.value = 'audio' // audio mode
         videoSource.value = `local://${args.src}`
         break
       case 'image':
-        playerMode.value = 'image'
+        pMode.value = 'image'
         imageSource.value = `local://${args.src}`
         break
     }
-    console.log(playerMode.value)
+    console.log(pMode.value)
   })
-  myAPI.rtPlayerValues((args) => {
-    playerValues.value = args
+  myAPI.rtpv((args) => {
+    pStatus.value = args
   })
   myAPI.command((args) => {
     switch (args.command) {
       case 'ended':
-        playerMode.value = 'logo'
+        pMode.value = 'logo'
         break
     }
   })
@@ -46,7 +46,7 @@ onMounted(() => {
     <!-- video & audio player -->
     <Transition>
       <VideoPlayer
-        v-show="playerMode === 'video'"
+        v-show="pMode === 'video'"
         ref="vp"
         style="width: 100%"
         :source="videoSource"
@@ -54,12 +54,12 @@ onMounted(() => {
     </Transition>
     <!-- image -->
     <Transition>
-      <q-img v-if="playerMode === 'image'" fit="cover" :src="imageSource" />
+      <q-img v-if="pMode === 'image'" fit="cover" :src="imageSource" />
     </Transition>
     <!-- logo -->
     <Transition>
       <img
-        v-if="playerMode === 'logo' || playerMode === 'audio'"
+        v-if="pMode === 'logo' || pMode === 'audio'"
         style="width: 200px"
         src="harman-logo.svg"
       />

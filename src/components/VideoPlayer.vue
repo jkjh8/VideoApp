@@ -1,11 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import {
-  playerValues,
-  playerMode,
-  playerCallback
-} from 'src/composables/usePlayer.js'
-import { playerCommands } from 'src/composables/usePlayerCommands'
+import { pStatus, pMode, pCallback } from 'src/composables/usePlayer.js'
+import { pCommands } from 'src/composables/usePlayerCommands'
 
 const panStatus = ref(false)
 
@@ -69,63 +65,11 @@ onMounted(async () => {
 
   // callback events
   const obj = vp.value
-  playerCallback(obj)
-  // obj.onplaying = (e) =>
-  //   upv({ type: 'playing', status: 'play', readyState: obj.readyState })
-  // obj.onabort = () =>
-  //   upv({ type: 'abort', status: 'stop', readyState: obj.readyState })
-  // obj.canplay = (e) =>
-  //   upv({ type: 'canplay', status: 'ready', readyState: obj.readyState })
-  // obj.oncanplaythrough = (e) =>
-  //   upv({ type: 'canplaythrough', status: 'ready', readyState: obj.readyState })
-  // obj.ondurationchange = (e) =>
-  //   upv({
-  //     type: 'durationchange',
-  //     duration: obj.duration,
-  //     readyState: obj.readyState
-  //   })
-  // obj.onemptied = () =>
-  //   upv({ type: 'emptied', status: 'emptied', readyState: obj.readyState })
-  // obj.onencrypted = () => upv({ type: 'encrypted', readyState: obj.readyState })
-  // obj.onended = () =>
-  //   upv({ type: 'ended', status: 'ended', readyState: obj.readyState })
-  // obj.onerror = (e) =>
-  //   upv({ type: 'error', errpr: obj.error, readyState: obj.readyState })
-  // obj.onloadeddata = (e) =>
-  //   upv({
-  //     type: 'loadeddata',
-  //     src: obj.src,
-  //     status: 'ready',
-  //     readyState: obj.readyState
-  //   })
-  // obj.onloadedmetadata = (e) =>
-  //   upv({
-  //     type: 'loadedmetadata',
-  //     src: obj.src,
-  //     status: 'ready',
-  //     readyState: obj.readyState
-  //   })
-  // obj.onloadstart = (e) =>
-  //   upv({ type: 'loadstart', status: 'stop', readyState: obj.readyState })
-  // obj.onpause = (e) =>
-  //   upv({ type: 'pause', status: 'paused', readyState: obj.readyState })
-  // obj.onplay = (e) =>
-  //   upv({ type: 'play', status: 'play', readyState: obj.readyState })
-  // // obj.onprogress = (e) => upv({ type: 'progress', value: e.target.value })
-  // obj.onratechange = (e) => upv({ type: 'ratechange', rate: obj.playbackRate })
-  // // obj.onseeked = (e) => upv({ type: 'seeked', readyState: obj.readyState })
-  // // obj.onseeking = (e) => upv({ type: 'seeking', readyState: obj.readyState })
-  // obj.onstalled = (e) =>
-  //   upv({ type: 'stalled', status: 'stop', readyState: obj.readyState })
-  // obj.onsuspend = (e) =>
-  //   upv({ type: 'suspend', status: 'stop', readyState: obj.readyState })
-  // obj.ontimeupdate = (e) => updateTimes()
-  // obj.onvolumechange = (e) => volumechanged(e)
-  // obj.onwaiting = (e) => upv({ type: 'waiting', readyState: obj.readyState })
+  pCallback(obj)
 
   // player Commands
-  myAPI.playerCommand((args) => {
-    playerCommands(obj, args)
+  myAPI.pc((args) => {
+    pCommands(obj, args)
   })
 })
 

@@ -15,7 +15,7 @@ const pan = (value) => {
 }
 
 const play = () => {
-  if (playerValues.status === 'ready' || playerValues.status === 'paused') {
+  if (pv.status === 'ready' || pv.status === 'paused') {
     bs.fromId(1).webContents.send('playerCommand', { command: 'play' })
     return 'play'
   } else {
@@ -24,7 +24,7 @@ const play = () => {
 }
 
 const pause = () => {
-  if (playerValues.status === 'play') {
+  if (pv.status === 'play') {
     bs.fromId(1).webContents.send('playerCommand', { command: 'pause' })
     return 'paused'
   } else {

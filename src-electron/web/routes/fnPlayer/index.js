@@ -1,16 +1,21 @@
 import express from 'express'
+import { BrowserWindow as bs } from 'electron'
 import logger from '/src-electron/logger'
-import { play, pause, stop } from '/src-electron/functions/player'
 
 const router = express.Router()
 
 router.get('/play', (req, res) => {
   try {
     let rt
-    switch (playerValues.mode) {
+    switch (pv.mode) {
       case 'video':
       case 'audio':
-        rt = { command: 'play', mode: playerValues.mode, result: play() }
+        if (pv.status === 'ready' || pv.status === 'paused') {
+          bs.fromId(1).webContents.send('pc', { command: 'play' })
+          rt = { command: 'play', mode: pv.mode, result: 'playing' }
+        } else {
+          rt = { command: 'play', mode: pv.mode, result: 'player not ready' }
+        }
         break
     }
     logger.info(rt)
@@ -24,10 +29,14 @@ router.get('/play', (req, res) => {
 router.get('/pause', (req, res) => {
   try {
     let rt
-    switch (playerValues.mode) {
+    switch (pv.mode) {
       case 'video':
       case 'audio':
-        rt = { command: 'pause', mode: playerValues.mode, result: pause() }
+        if (pv.status === 'play') {
+          bs.fromId(1).webContents.send('pc', { command: 'pause' })
+          rt = { command: 'pause', mode: pv.mode, result: 'paused' }
+        }
+        rt = { command: 'pause', mode: pv.mode, result: 'not playing' }
         break
     }
     logger.info(rt)
@@ -41,13 +50,13 @@ router.get('/pause', (req, res) => {
 router.get('/stop', (req, res) => {
   try {
     let rt
-    switch (playerValues.mode) {
+    switch (pv.mode) {
       case 'video':
       case 'audio':
-        rt = { command: 'stop', mode: playerValues.mode, result: stop() }
+        bs.fromId(1).webContents.send('pc', { command: 'load' })
+        rt = { command: 'stop', mode: pv.mode, result: 'load or stop' }
         break
     }
-
     logger.info(rt)
     return res.status(200).json(rt)
   } catch (error) {

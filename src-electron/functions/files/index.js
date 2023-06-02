@@ -63,9 +63,9 @@ const getMetaData = (file) => {
   ffmpeg.ffprobe(file, (err, meta) => {
     ffmpeg.ffprobe(file, (err, meta) => {
       if (err) reject(new Error('metadata read error'))
-      playerValues = { ...playerValues, ...meta }
-      io.emit('playerstate', playerValues)
-      bw.fromId(1).webContents.send('updateState', playerValues)
+      pv = { ...pv, ...meta }
+      io.emit('playerstate', pv)
+      bw.fromId(1).webContents.send('updateState', pv)
     })
   })
 }
@@ -79,22 +79,22 @@ const openFile = async (filePath) => {
     let fileMetaData
 
     // update values
-    playerValues = {}
-    playerValues.name = fileName
-    playerValues.ext = fileExt
-    playerValues.src = encodedFilePath
+    pv = {}
+    pv.name = fileName
+    pv.ext = fileExt
+    pv.src = encodedFilePath
 
     switch (fileExt) {
       case '.mp4':
       case '.mov':
       case '.mkv':
         getMetaData(filePath)
-        playerValues = { mode: 'video', ...playerValues }
+        pv = { mode: 'video', ...pv }
         break
       case '.mp3':
       case '.wav':
         getMetaData(filePath)
-        playerValues = { mode: 'audio', ...playerValues }
+        pv = { mode: 'audio', ...pv }
         break
       case '.jpg':
       case '.jpeg':
@@ -102,14 +102,14 @@ const openFile = async (filePath) => {
       case '.bmp':
       case '.gif':
         const dimensions = sizeOf(filePath)
-        playerValues = { mode: 'image', ...playerValues, ...dimensions }
+        pv = { mode: 'image', ...pv, ...dimensions }
     }
 
     // send player data to frontend
     bw.fromId(1).webContents.send('open', {
       src: encodedFilePath,
-      mode: playerValues.mode,
-      values: playerValues
+      mode: pv.mode,
+      values: pv
     })
     //update db
     db.update(

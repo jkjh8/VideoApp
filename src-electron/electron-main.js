@@ -3,8 +3,8 @@ import path from 'path'
 import os from 'os'
 import logger from './logger'
 
-global.playerValues = {}
-global.playerTimes = {
+global.pv = {}
+global.pt = {
   duration: 0,
   currentTime: 0,
   remaining: 0

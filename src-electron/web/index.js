@@ -57,8 +57,8 @@ app.use('/api', routes)
 
 // socket.io events
 io.on('connection', (socket) => {
-  io.emit('playerstate', playerValues)
-  io.emit('times', playerTimes)
+  io.emit('playerstate', pv)
+  io.emit('times', pt)
   logger.info(`connection socket.io id=${socket.id}`)
   socket.on('playcommand', (args) => {
     playerCommand(args)

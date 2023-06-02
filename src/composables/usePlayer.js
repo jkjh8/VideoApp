@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 
-const playerValues = ref({})
-const playerMode = ref('logo')
+const pStatus = ref({})
+const pMode = ref('logo')
 const bgColor = ref('#fff')
 
 const upv = (args) => {
@@ -16,7 +16,7 @@ const volumechanged = (obj) => {
   }
 }
 
-const playerCallback = (obj) => {
+const pCallback = (obj) => {
   obj.onplaying = (e) =>
     upv({ type: 'playing', status: 'play', readyState: obj.readyState })
   obj.onabort = () =>
@@ -76,4 +76,4 @@ const playerCallback = (obj) => {
   obj.onwaiting = (e) => upv({ type: 'waiting', readyState: obj.readyState })
 }
 
-export { playerValues, playerMode, bgColor, upv, playerCallback }
+export { pStatus, pMode, bgColor, upv, pCallback }

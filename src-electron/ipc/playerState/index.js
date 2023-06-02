@@ -5,39 +5,39 @@ ipcMain.on('updateState', (e, args) => {
   switch (args.type) {
     case 'loadeddata':
     case 'loadedmetadata':
-      updateValues(args)
+      upv(args)
       logger.info(`${args.type}: ${args.src}`)
       break
     case 'ratechange':
-      updateValues(args)
+      upv(args)
       logger.info(`${args.type}: ${args.rate}`)
       break
     case 'volumechanged':
-      updateValues(args)
+      upv(args)
       logger.info(`${args.type}: ${args.volume}`)
       break
     case 'timeupdate':
-      updateValues({ status: 'play' })
-      updateTimes(args)
+      upv({ status: 'play' })
+      upt(args)
       break
     case 'durationchange':
-      updateTimes(args)
-      updateValues(args)
+      upt(args)
+      upv(args)
       break
     case 'playing':
     case 'play':
-      updateValues(args)
-      logger.info(`${args.type} file: ${playerValues.name}`)
+      upv(args)
+      logger.info(`${args.type} file: ${pv.name}`)
       break
     case 'error':
       logger.error(`player error: ${args.value}`)
       break
     case 'waiting':
-      updateValues(args)
+      upv(args)
       logger.warn(args.type)
       break
     case 'ended':
-      updateValues({ ...args, playbtn: false, status: 'ended' })
+      upv({ ...args, playbtn: false, status: 'ended' })
       logger.info(args.type)
       bw.fromId(1).webContents.send('command', {
         command: 'ended',
@@ -45,27 +45,27 @@ ipcMain.on('updateState', (e, args) => {
       })
       break
     default:
-      updateValues(args)
+      upv(args)
       // logger.info(args.type)
       break
   }
-  bw.fromId(1).webContents.send('rtPlayerValues', playerValues)
+  bw.fromId(1).webContents.send('rtpv', pv)
 })
 
-const updateValues = (args) => {
+const upv = (args) => {
   for (const key in args) {
     if (key != 'type') {
-      playerValues[key] = args[key]
+      pv[key] = args[key]
     }
   }
-  io.emit('playerstate', playerValues)
+  io.emit('playerstate', pv)
 }
 
-const updateTimes = (args) => {
+const upt = (args) => {
   for (const key in args) {
     if (key != 'type') {
-      playerTimes[key] = args[key]
+      pt[key] = args[key]
     }
   }
-  io.emit('times', playerTimes)
+  io.emit('times', pt)
 }

@@ -1,8 +1,8 @@
 import { ref } from 'vue'
-import { playerValues, playerMode } from 'src/composables/usePlayer'
+import { pStatus, pMode } from 'src/composables/usePlayer'
 
 const panStatus = ref(false)
-const playerCommands = (obj, args) => {
+const pCommands = (obj, args) => {
   switch (args.command) {
     case 'seek':
       obj.currentTime = args.seekTime
@@ -18,7 +18,7 @@ const playerCommands = (obj, args) => {
       }
       break
     case 'play':
-      playerMode.value = playerValues.value.mode
+      pMode.value = pStatus.value.mode
       obj.play()
       break
     case 'pause':
@@ -30,4 +30,4 @@ const playerCommands = (obj, args) => {
   }
 }
 
-export { playerCommands }
+export { pCommands }
