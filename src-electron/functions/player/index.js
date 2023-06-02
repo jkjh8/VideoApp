@@ -1,4 +1,5 @@
 import { BrowserWindow as bs } from 'electron'
+
 const seekTime = (time) => {
   bs.fromId(1).webContents.send('playerCommand', {
     command: 'seek',
@@ -14,10 +15,26 @@ const pan = (value) => {
 }
 
 const play = () => {
-  bs.fromId(1).webContents.send('playerCommand', { command: 'play' })
+  if (playerValues.status === 'ready' || playerValues.status === 'paused') {
+    bs.fromId(1).webContents.send('playerCommand', { command: 'play' })
+    return 'play'
+  } else {
+    return 'player not ready'
+  }
 }
 
 const pause = () => {
-  bs.fromId(1).webContents.send('playerCommand', { command: 'pause' })
+  if (playerValues.status === 'play') {
+    bs.fromId(1).webContents.send('playerCommand', { command: 'pause' })
+    return 'paused'
+  } else {
+    return 'player not playing'
+  }
 }
-export { seekTime, pan, play, pause }
+
+const stop = () => {
+  bs.fromId(1).webContents.send('playerCommand', { command: 'stop' })
+  return 'stopped or loaded'
+}
+
+export { seekTime, pan, play, pause, stop }

@@ -17,7 +17,7 @@ ipcMain.on('updateState', (e, args) => {
       logger.info(`${args.type}: ${args.volume}`)
       break
     case 'timeupdate':
-      updateValues({ play: 1 })
+      updateValues({ status: 'play' })
       updateTimes(args)
       break
     case 'durationchange':
@@ -37,7 +37,7 @@ ipcMain.on('updateState', (e, args) => {
       logger.warn(args.type)
       break
     case 'ended':
-      updateValues({ ...args, playbtn: false })
+      updateValues({ ...args, playbtn: false, status: 'ended' })
       logger.info(args.type)
       bw.fromId(1).webContents.send('command', {
         command: 'ended',

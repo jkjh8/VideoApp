@@ -18,7 +18,7 @@ onMounted(() => {
         videoSource.value = `local://${args.src}`
         break
       case 'audio':
-        playerMode.value = 'audio'
+        playerMode.value = 'audio' // audio mode
         videoSource.value = `local://${args.src}`
         break
       case 'image':
@@ -26,6 +26,7 @@ onMounted(() => {
         imageSource.value = `local://${args.src}`
         break
     }
+    console.log(playerMode.value)
   })
   myAPI.rtPlayerValues((args) => {
     playerValues.value = args
@@ -59,7 +60,7 @@ onMounted(() => {
     <!-- logo -->
     <Transition>
       <img
-        v-if="playerMode === 'logo'"
+        v-if="playerMode === 'logo' || playerMode === 'audio'"
         style="width: 200px"
         src="harman-logo.svg"
       />
