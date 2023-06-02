@@ -58,7 +58,11 @@ onMounted(() => {
     </Transition>
     <!-- logo -->
     <Transition>
-      <img v-if="playerMode === 'logo'" src="logo.png" />
+      <img
+        v-if="playerMode === 'logo'"
+        style="width: 200px"
+        src="harman-logo.svg"
+      />
     </Transition>
     <!-- test buttons -->
     <div class="q-gutter-md">
