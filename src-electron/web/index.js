@@ -9,7 +9,7 @@ import httpLogger from 'morgan'
 import session from 'express-session'
 
 import logger from '/src-electron/logger'
-import { playerCommand } from './command'
+import { ioCommands } from './ioCommand'
 import routes from './routes'
 
 import * as dotenv from 'dotenv'
@@ -51,17 +51,20 @@ app.use(
     }
   })
 )
+const publicPath = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
 
+// static path for vue.js
+app.use(express.static(path.join(publicPath, 'spa')))
 // router
-app.use('/api', routes)
+app.use('/', routes)
 
 // socket.io events
 io.on('connection', (socket) => {
   io.emit('playerstate', pv)
   io.emit('times', pt)
   logger.info(`connection socket.io id=${socket.id}`)
-  socket.on('playcommand', (args) => {
-    playerCommand(args)
+  socket.on('ioCommands', (args) => {
+    ioCommands(args)
   })
 })
 

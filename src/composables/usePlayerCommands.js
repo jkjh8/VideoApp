@@ -25,6 +25,8 @@ const pCommands = (obj, args) => {
       obj.pause()
       break
     case 'stop':
+    case 'load':
+      obj.pause()
       obj.load()
       break
   }

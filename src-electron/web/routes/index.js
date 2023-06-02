@@ -1,11 +1,14 @@
+import path from 'path'
 import express from 'express'
-import fn from './fnPlayer'
+import api from './api'
+
 const router = express.Router()
+const publicPath = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
 
 router.get('/', (req, res, next) => {
-  res.send('<h2>Welcome to the API Page</h2>')
+  res.sendFile(path.join(publicPath, 'spa', 'index.html'))
 })
 
-router.use('/fn', fn)
+router.use('/api', api)
 
 export default router

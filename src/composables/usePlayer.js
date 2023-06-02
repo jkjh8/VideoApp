@@ -5,7 +5,7 @@ const pMode = ref('logo')
 const bgColor = ref('#fff')
 
 const upv = (args) => {
-  myAPI.updateState({ ...args })
+  myAPI.updateState(args)
 }
 
 const volumechanged = (obj) => {

@@ -35,8 +35,9 @@ router.get('/pause', (req, res) => {
         if (pv.status === 'play') {
           bs.fromId(1).webContents.send('pc', { command: 'pause' })
           rt = { command: 'pause', mode: pv.mode, result: 'paused' }
+        } else {
+          rt = { command: 'pause', mode: pv.mode, result: 'not playing' }
         }
-        rt = { command: 'pause', mode: pv.mode, result: 'not playing' }
         break
     }
     logger.info(rt)
