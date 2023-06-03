@@ -1,6 +1,7 @@
 import express from 'express'
 import { BrowserWindow as bs } from 'electron'
 import logger from '/src-electron/logger'
+import { openFile } from '/src-electron/functions/files'
 
 const router = express.Router()
 
@@ -21,7 +22,7 @@ router.get('/play', (req, res) => {
     logger.info(rt)
     res.status(200).json(rt)
   } catch (error) {
-    logger.error(error)
+    logger.error('web play', error)
     return res.status(500).json(error)
   }
 })
@@ -43,7 +44,7 @@ router.get('/pause', (req, res) => {
     logger.info(rt)
     return res.status(200).json(rt)
   } catch (error) {
-    logger.error(error)
+    logger.error('web pause', error)
     return res.status(500).json(error)
   }
 })
@@ -61,8 +62,19 @@ router.get('/stop', (req, res) => {
     logger.info(rt)
     return res.status(200).json(rt)
   } catch (error) {
-    logger.error(error)
+    logger.error('web stop', error)
     return res.status(500).json(error)
+  }
+})
+
+router.get('/loadfile', (req, res) => {
+  try {
+    const { file } = req.query
+    console.log(file)
+    openFile(decodeURI(file))
+    res.status(200).json({ result: true })
+  } catch (error) {
+    res.status(500).json({ error: error })
   }
 })
 

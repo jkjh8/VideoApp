@@ -41,7 +41,7 @@ ipcMain.on('updateState', (e, args) => {
       logger.info(args.type)
       bw.fromId(1).webContents.send('command', {
         command: 'ended',
-        mode: playerValues.mode
+        mode: pv.mode
       })
       break
     default:

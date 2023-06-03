@@ -44,33 +44,32 @@ onMounted(() => {
 <template>
   <q-page class="flex flex-center">
     <!-- video & audio player -->
-    <Transition>
-      <VideoPlayer
-        v-show="pMode === 'video'"
-        ref="vp"
-        style="width: 100%"
-        :source="videoSource"
-      />
-    </Transition>
+
+    <VideoPlayer
+      v-show="pMode === 'video'"
+      ref="vp"
+      style="width: 100%"
+      :source="videoSource"
+    />
+
     <!-- image -->
-    <Transition>
-      <q-img v-if="pMode === 'image'" fit="cover" :src="imageSource" />
-    </Transition>
+
+    <q-img v-show="pMode === 'image'" fit="cover" :src="imageSource" />
+
     <!-- logo -->
-    <Transition>
-      <img
-        v-if="pMode === 'logo' || pMode === 'audio'"
-        style="width: 200px"
-        src="harman-logo.svg"
-      />
-    </Transition>
+
+    <img
+      v-show="pMode === 'logo' || pMode === 'audio'"
+      style="width: 200px"
+      src="harman-logo.svg"
+    />
   </q-page>
 </template>
 
 <style scoped>
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 1s ease;
 }
 
 .v-enter-from,

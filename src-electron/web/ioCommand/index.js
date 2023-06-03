@@ -15,11 +15,10 @@ const ioCommands = (args) => {
           command: 'pan',
           value: args.value
         })
-        pan(args.value)
         break
     }
   } catch (err) {
-    logger.error(err)
+    logger.error('io', err)
   }
 }
 

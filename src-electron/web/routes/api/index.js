@@ -1,5 +1,5 @@
 import express from 'express'
-import fn from './fnPlayer'
+import fn from './player'
 import files from './files'
 
 const router = express.Router()
