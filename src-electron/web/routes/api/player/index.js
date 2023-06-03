@@ -1,5 +1,5 @@
 import express from 'express'
-import { BrowserWindow as bs } from 'electron'
+import { BrowserWindow as bw } from 'electron'
 import logger from '/src-electron/logger'
 import { openFile } from '/src-electron/functions/files'
 
@@ -11,8 +11,12 @@ router.get('/play', (req, res) => {
     switch (pv.mode) {
       case 'video':
       case 'audio':
-        if (pv.status === 'ready' || pv.status === 'paused') {
-          bs.fromId(1).webContents.send('pc', { command: 'play' })
+        if (
+          pv.status === 'ready' ||
+          pv.status === 'paused' ||
+          pv.status === 'ended'
+        ) {
+          bw.fromId(1).webContents.send('pc', { command: 'play' })
           rt = { command: 'play', mode: pv.mode, result: 'playing' }
         } else {
           rt = { command: 'play', mode: pv.mode, result: 'player not ready' }
@@ -34,7 +38,7 @@ router.get('/pause', (req, res) => {
       case 'video':
       case 'audio':
         if (pv.status === 'play') {
-          bs.fromId(1).webContents.send('pc', { command: 'pause' })
+          bw.fromId(1).webContents.send('pc', { command: 'pause' })
           rt = { command: 'pause', mode: pv.mode, result: 'paused' }
         } else {
           rt = { command: 'pause', mode: pv.mode, result: 'not playing' }
@@ -55,11 +59,15 @@ router.get('/stop', (req, res) => {
     switch (pv.mode) {
       case 'video':
       case 'audio':
-        bs.fromId(1).webContents.send('pc', { command: 'load' })
+        bw.fromId(1).webContents.send('pc', { command: 'load' })
         rt = { command: 'stop', mode: pv.mode, result: 'load or stop' }
         break
     }
     logger.info(rt)
+
+    // show logo
+    bw.fromId(1).webContents.send('command', { command: 'showLogo' })
+
     return res.status(200).json(rt)
   } catch (error) {
     logger.error('web stop', error)
@@ -70,8 +78,8 @@ router.get('/stop', (req, res) => {
 router.get('/loadfile', (req, res) => {
   try {
     const { file } = req.query
-    console.log(file)
     openFile(decodeURI(file))
+    logger.info(`loaded file: ${file}`)
     res.status(200).json({ result: true })
   } catch (error) {
     res.status(500).json({ error: error })

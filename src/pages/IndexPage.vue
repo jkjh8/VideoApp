@@ -14,15 +14,15 @@ onMounted(() => {
     pStatus.value = { ...args.values }
     switch (args.mode) {
       case 'video':
-        pMode.value = 'video'
+        // pMode.value = 'video'
         videoSource.value = `local://${args.src}`
         break
       case 'audio':
-        pMode.value = 'audio' // audio mode
+        // pMode.value = 'audio' // audio mode
         videoSource.value = `local://${args.src}`
         break
       case 'image':
-        pMode.value = 'image'
+        // pMode.value = 'image'
         imageSource.value = `local://${args.src}`
         break
     }
@@ -33,7 +33,13 @@ onMounted(() => {
   })
   myAPI.command((args) => {
     switch (args.command) {
+      case 'mode':
+        pMode.value = args.value
+        break
       case 'ended':
+        pMode.value = 'logo'
+        break
+      case 'showLogo':
         pMode.value = 'logo'
         break
     }
