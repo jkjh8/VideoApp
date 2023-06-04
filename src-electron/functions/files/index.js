@@ -76,7 +76,6 @@ const openFile = async (filePath) => {
     const encodedFilePath = encodeURI(filePath)
     const fileName = parsedFilePath.name + parsedFilePath.ext
     const fileExt = parsedFilePath.ext
-    let fileMetaData
 
     // update values
     pv = {}
@@ -89,12 +88,12 @@ const openFile = async (filePath) => {
       case '.mov':
       case '.mkv':
         getMetaData(filePath)
-        pv = { mode: 'video', ...pv }
+        pv = { mode: 'video', filePath, ...pv }
         break
       case '.mp3':
       case '.wav':
         getMetaData(filePath)
-        pv = { mode: 'audio', ...pv }
+        pv = { mode: 'audio', filePath, ...pv }
         break
       case '.jpg':
       case '.jpeg':

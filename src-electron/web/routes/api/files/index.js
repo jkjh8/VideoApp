@@ -62,4 +62,10 @@ router.post('/upload', upload.any(), (req, res) => {
   }
 })
 
+router.get('/downloadFile', (req, res) => {
+  const { file } = req.query
+  console.log(file)
+  res.download(file.fullPath, file.base)
+})
+
 export default router

@@ -8,6 +8,7 @@ const router = express.Router()
 router.get('/play', (req, res) => {
   try {
     let rt
+    console.log(pv)
     switch (pv.mode) {
       case 'video':
       case 'audio':
@@ -18,12 +19,16 @@ router.get('/play', (req, res) => {
         ) {
           bw.fromId(1).webContents.send('pc', { command: 'play' })
           rt = { command: 'play', mode: pv.mode, result: 'playing' }
+        } else if (pv.status === 'stop') {
+          bw.fromId(1).webContents.send('pc', { command: 'load' })
+          bw.fromId(1).webContents.send('pc', { command: 'play' })
+          rt = { command: 'play', mode: pv.mode, result: 'playing' }
         } else {
           rt = { command: 'play', mode: pv.mode, result: 'player not ready' }
         }
         break
     }
-    logger.info(rt)
+    logger.info(JSON.stringify(rt))
     res.status(200).json(rt)
   } catch (error) {
     logger.error('web play', error)
@@ -59,14 +64,16 @@ router.get('/stop', (req, res) => {
     switch (pv.mode) {
       case 'video':
       case 'audio':
-        bw.fromId(1).webContents.send('pc', { command: 'load' })
+        // bw.fromId(1).webContents.send('pc', { command: 'load' })
+        bw.fromId(1).webContents.send('pc', { command: 'pause' })
+        bw.fromId(1).webContents.send('pc', { command: 'seek', seekTime: 0 })
         rt = { command: 'stop', mode: pv.mode, result: 'load or stop' }
         break
     }
     logger.info(rt)
 
     // show logo
-    bw.fromId(1).webContents.send('command', { command: 'showLogo' })
+    // bw.fromId(1).webContents.send('command', { command: 'showLogo' })
 
     return res.status(200).json(rt)
   } catch (error) {
@@ -77,8 +84,14 @@ router.get('/stop', (req, res) => {
 
 router.get('/loadfile', (req, res) => {
   try {
-    const { file } = req.query
-    openFile(decodeURI(file))
+    const file = decodeURI(req.query.file)
+    console.log(pv)
+    if (pv.filePath === file) {
+      bw.fromId(1).webContents.send('pc', { command: 'load' })
+    } else {
+      openFile(file)
+    }
+    pv.status = 'ready'
     logger.info(`loaded file: ${file}`)
     res.status(200).json({ result: true })
   } catch (error) {

@@ -29,6 +29,9 @@ const pCommands = (obj, args) => {
       obj.pause()
       obj.load()
       break
+    case 'clear':
+      obj.src = null
+      break
   }
 }
 
