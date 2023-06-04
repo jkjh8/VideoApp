@@ -58,7 +58,6 @@ const upv = (args) => {
       pv[key] = args[key]
     }
   }
-  console.log(pv.status)
   io.emit('playerstate', pv)
 }
 

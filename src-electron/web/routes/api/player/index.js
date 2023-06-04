@@ -73,7 +73,7 @@ router.get('/stop', (req, res) => {
     logger.info(rt)
 
     // show logo
-    // bw.fromId(1).webContents.send('command', { command: 'showLogo' })
+    bw.fromId(1).webContents.send('command', { command: 'showLogo' })
 
     return res.status(200).json(rt)
   } catch (error) {
@@ -85,7 +85,6 @@ router.get('/stop', (req, res) => {
 router.get('/loadfile', (req, res) => {
   try {
     const file = decodeURI(req.query.file)
-    console.log(pv)
     if (pv.filePath === file) {
       bw.fromId(1).webContents.send('pc', { command: 'load' })
     } else {
