@@ -68,4 +68,15 @@ router.get('/downloadFile', (req, res) => {
   res.download(file.fullPath, file.base)
 })
 
+router.get('/deleteFile', (req, res) => {
+  try {
+    const { file } = req.query
+    fs.unlinkSync(file.fullPath)
+    res.status(200).json({ result: true })
+  } catch (error) {
+    logger.error('web file delete error', error)
+    res.status(500).json({ error: error })
+  }
+})
+
 export default router

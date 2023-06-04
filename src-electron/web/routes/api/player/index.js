@@ -27,10 +27,10 @@ router.get('/play', (req, res) => {
         }
         break
     }
-    logger.info(JSON.stringify(rt))
+    logger.info('web player play', JSON.stringify(rt))
     res.status(200).json(rt)
   } catch (error) {
-    logger.error('web play', error)
+    logger.error('web player play error', error)
     return res.status(500).json(error)
   }
 })
@@ -49,10 +49,10 @@ router.get('/pause', (req, res) => {
         }
         break
     }
-    logger.info(JSON.stringify(rt))
+    logger.info('web player play', JSON.stringify(rt))
     return res.status(200).json(rt)
   } catch (error) {
-    logger.error('web pause', error)
+    logger.error('web player pause error', error)
     return res.status(500).json(error)
   }
 })
@@ -69,14 +69,14 @@ router.get('/stop', (req, res) => {
         rt = { command: 'stop', mode: pv.mode, result: 'load or stop' }
         break
     }
-    logger.info(JSON.stringify(rt))
+    logger.info('web player stop', JSON.stringify(rt))
 
     // show logo
     mainCommand({ command: 'showLogo' })
 
     return res.status(200).json(rt)
   } catch (error) {
-    logger.error('web stop', error)
+    logger.error('web player stop error', error)
     return res.status(500).json(error)
   }
 })
@@ -90,10 +90,10 @@ router.get('/loadfile', (req, res) => {
       openFile(file)
     }
     pv.status = 'ready'
-    logger.info(`loaded file: ${file}`)
+    logger.info(`web loaded file: ${file}`)
     res.status(200).json({ result: true })
   } catch (error) {
-    logger.error(error)
+    logger.error('web player load file error', error)
     res.status(500).json({ error: error })
   }
 })
@@ -103,7 +103,7 @@ router.get('/fastforward', (req, res) => {
     pCommand({ command: 'fastforward', value: req.query.time })
     res.status(200).json({ result: true })
   } catch (error) {
-    logger.error(error)
+    logger.error('web player ff fn error', error)
     res.status(500).json({ error: error })
   }
 })
@@ -113,7 +113,7 @@ router.get('/rewind', (req, res) => {
     pCommand({ command: 'rewind', value: req.query.time })
     res.status(200).json({ result: true })
   } catch (error) {
-    logger.error(error)
+    logger.error('web player rewind fn error', error)
     res.status(500).json({ error: error })
   }
 })
