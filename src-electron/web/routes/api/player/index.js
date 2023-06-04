@@ -1,6 +1,7 @@
 import express from 'express'
 import { BrowserWindow as bw } from 'electron'
 import logger from '/src-electron/logger'
+import { pCommand, mainCommand } from '/src-electron/functions/ipc'
 import { openFile } from '/src-electron/functions/files'
 
 const router = express.Router()
@@ -12,19 +13,17 @@ router.get('/play', (req, res) => {
     switch (pv.mode) {
       case 'video':
       case 'audio':
-        if (
-          pv.status === 'ready' ||
-          pv.status === 'paused' ||
-          pv.status === 'ended'
-        ) {
-          bw.fromId(1).webContents.send('pc', { command: 'play' })
-          rt = { command: 'play', mode: pv.mode, result: 'playing' }
-        } else if (pv.status === 'stop') {
-          bw.fromId(1).webContents.send('pc', { command: 'load' })
-          bw.fromId(1).webContents.send('pc', { command: 'play' })
-          rt = { command: 'play', mode: pv.mode, result: 'playing' }
-        } else {
-          rt = { command: 'play', mode: pv.mode, result: 'player not ready' }
+        switch (pv.status) {
+          case 'ready':
+          case 'paused':
+          case 'ended':
+          case 'stop':
+            pCommand({ command: 'play' })
+            rt = { command: 'play', mode: pv.mode, result: 'playing' }
+            break
+          default:
+            rt = { command: 'play', mode: pv.mode, result: 'player not ready' }
+            break
         }
         break
     }
@@ -43,14 +42,14 @@ router.get('/pause', (req, res) => {
       case 'video':
       case 'audio':
         if (pv.status === 'play') {
-          bw.fromId(1).webContents.send('pc', { command: 'pause' })
+          pCommand({ command: 'pause' })
           rt = { command: 'pause', mode: pv.mode, result: 'paused' }
         } else {
           rt = { command: 'pause', mode: pv.mode, result: 'not playing' }
         }
         break
     }
-    logger.info(rt)
+    logger.info(JSON.stringify(rt))
     return res.status(200).json(rt)
   } catch (error) {
     logger.error('web pause', error)
@@ -64,16 +63,16 @@ router.get('/stop', (req, res) => {
     switch (pv.mode) {
       case 'video':
       case 'audio':
-        // bw.fromId(1).webContents.send('pc', { command: 'load' })
-        bw.fromId(1).webContents.send('pc', { command: 'pause' })
-        bw.fromId(1).webContents.send('pc', { command: 'seek', seekTime: 0 })
+        // pCommand({ command: 'load' })
+        pCommand({ command: 'pause' })
+        pCommand({ command: 'seek', seekTime: 0 })
         rt = { command: 'stop', mode: pv.mode, result: 'load or stop' }
         break
     }
-    logger.info(rt)
+    logger.info(JSON.stringify(rt))
 
     // show logo
-    bw.fromId(1).webContents.send('command', { command: 'showLogo' })
+    mainCommand({ command: 'showLogo' })
 
     return res.status(200).json(rt)
   } catch (error) {
@@ -86,7 +85,7 @@ router.get('/loadfile', (req, res) => {
   try {
     const file = decodeURI(req.query.file)
     if (pv.filePath === file) {
-      bw.fromId(1).webContents.send('pc', { command: 'load' })
+      pCommand({ command: 'load' })
     } else {
       openFile(file)
     }
@@ -94,6 +93,27 @@ router.get('/loadfile', (req, res) => {
     logger.info(`loaded file: ${file}`)
     res.status(200).json({ result: true })
   } catch (error) {
+    logger.error(error)
+    res.status(500).json({ error: error })
+  }
+})
+
+router.get('/fastforward', (req, res) => {
+  try {
+    pCommand({ command: 'fastforward', value: req.query.time })
+    res.status(200).json({ result: true })
+  } catch (error) {
+    logger.error(error)
+    res.status(500).json({ error: error })
+  }
+})
+
+router.get('/rewind', (req, res) => {
+  try {
+    pCommand({ command: 'rewind', value: req.query.time })
+    res.status(200).json({ result: true })
+  } catch (error) {
+    logger.error(error)
     res.status(500).json({ error: error })
   }
 })

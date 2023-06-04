@@ -32,6 +32,12 @@ const pCommands = (obj, args) => {
     case 'clear':
       obj.src = null
       break
+    case 'fastforward':
+      obj.currentTime = obj.currentTime + Number(args.value)
+      break
+    case 'rewind':
+      obj.currentTime = obj.currentTime - Number(args.value)
+      break
   }
 }
 
