@@ -43,14 +43,16 @@ const pCallback = (obj) => {
       type: 'loadeddata',
       src: obj.src,
       status: 'ready',
-      readyState: obj.readyState
+      readyState: obj.readyState,
+      sinkId: obj.sinkId
     })
   obj.onloadedmetadata = (e) =>
     upv({
       type: 'loadedmetadata',
       src: obj.src,
       status: 'ready',
-      readyState: obj.readyState
+      readyState: obj.readyState,
+      sinkId: obj.sinkId
     })
   obj.onloadstart = (e) =>
     upv({ type: 'loadstart', status: 'stop', readyState: obj.readyState })

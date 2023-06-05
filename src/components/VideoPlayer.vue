@@ -63,8 +63,9 @@ onMounted(async () => {
     (device) => device.kind === 'audiooutput'
   )
 
-  // callback events
   const obj = vp.value
+
+  // callback events
   pCallback(obj)
 
   // player Commands

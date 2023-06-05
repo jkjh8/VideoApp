@@ -12,6 +12,8 @@ import logger from '/src-electron/logger'
 import { ioCommands } from './ioCommand'
 import routes from './routes'
 
+import { pCommand } from '/src-electron/functions/ipc'
+
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -62,6 +64,8 @@ app.use('/', routes)
 io.on('connection', (socket) => {
   io.emit('playerstate', pv)
   io.emit('times', pt)
+  pCommand({ command: 'devices' })
+  pCommand({ command: 'device' })
   logger.info(`connection socket.io id=${socket.id}`)
   socket.on('ioCommands', (args) => {
     ioCommands(args)

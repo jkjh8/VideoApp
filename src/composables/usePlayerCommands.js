@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { pStatus, pMode } from 'src/composables/usePlayer'
 
 const panStatus = ref(false)
-const pCommands = (obj, args) => {
+const pCommands = async (obj, args) => {
   switch (args.command) {
     case 'seek':
       obj.currentTime = args.seekTime
@@ -37,6 +37,14 @@ const pCommands = (obj, args) => {
       break
     case 'rewind':
       obj.currentTime = obj.currentTime - Number(args.value)
+      break
+    case 'devices':
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      console.log(devices)
+      myAPI.updateState({ type: 'devices', devices: JSON.stringify(devices) })
+      break
+    case 'device':
+      myAPI.updateState({ type: 'device', device: obj.sinkId })
       break
   }
 }

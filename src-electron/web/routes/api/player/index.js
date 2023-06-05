@@ -118,4 +118,24 @@ router.get('/rewind', (req, res) => {
   }
 })
 
+router.get('/devices', (req, res) => {
+  try {
+    pCommand({ command: 'devices' })
+    res.status(200).json({ result: true })
+  } catch (error) {
+    logger.error('web player devices error', error)
+    res.status(500).json({ error })
+  }
+})
+
+router.get('/device', (req, res) => {
+  try {
+    pCommand({ command: 'device' })
+    res.status(200).json({ result: true })
+  } catch (error) {
+    logger.error('web player device error', error)
+    res.status(500).json({ error })
+  }
+})
+
 export default router

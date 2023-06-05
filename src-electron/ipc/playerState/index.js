@@ -44,6 +44,12 @@ ipcMain.on('updateState', (e, args) => {
         mode: pv.mode
       })
       break
+    case 'devices':
+      io.emit('devices', args.devices)
+      break
+    case 'device':
+      io.emit('device', { device: args.device })
+      break
     default:
       upv(args)
       // logger.info(args.type)
