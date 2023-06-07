@@ -12,7 +12,7 @@ import logger from '/src-electron/logger'
 import { ioCommands } from './ioCommand'
 import routes from './routes'
 
-import { pCommand } from '/src-electron/functions/ipc'
+import { pCommand } from '/src-electron/functions/webToIPC'
 
 import * as dotenv from 'dotenv'
 dotenv.config()

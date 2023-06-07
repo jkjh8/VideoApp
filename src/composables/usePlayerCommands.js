@@ -40,11 +40,13 @@ const pCommands = async (obj, args) => {
       break
     case 'devices':
       const devices = await navigator.mediaDevices.enumerateDevices()
-      console.log(devices)
       myAPI.updateState({ type: 'devices', devices: JSON.stringify(devices) })
       break
     case 'device':
       myAPI.updateState({ type: 'device', device: obj.sinkId })
+      break
+    case 'setDevice':
+      obj.setSinkId(args.deviceId)
       break
   }
 }

@@ -1,7 +1,7 @@
 import express from 'express'
 import { BrowserWindow as bw } from 'electron'
 import logger from '/src-electron/logger'
-import { pCommand, mainCommand } from '/src-electron/functions/ipc'
+import { pCommand, mainCommand } from '/src-electron/functions/webToIPC'
 import { openFile } from '/src-electron/functions/files'
 
 const router = express.Router()
@@ -134,6 +134,17 @@ router.get('/device', (req, res) => {
     res.status(200).json({ result: true })
   } catch (error) {
     logger.error('web player device error', error)
+    res.status(500).json({ error })
+  }
+})
+
+router.post('/setDevice', (req, res) => {
+  try {
+    const { deviceId } = req.body
+    pCommand({ command: 'setDevice', deviceId: deviceId })
+    res.status(200).json({ result: true })
+  } catch (error) {
+    logger.error('web player set device error', error)
     res.status(500).json({ error })
   }
 })
