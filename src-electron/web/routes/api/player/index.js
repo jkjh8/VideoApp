@@ -3,6 +3,7 @@ import { BrowserWindow as bw } from 'electron'
 import db from '/src-electron/db'
 import logger from '/src-electron/logger'
 import { pCommand, mainCommand } from '/src-electron/functions/webToIPC'
+import { setFullScreen } from '/src-electron/functions/player'
 import { openFile } from '/src-electron/functions/files'
 
 const router = express.Router()
@@ -151,6 +152,16 @@ router.post('/setDevice', async (req, res) => {
     res.status(200).json({ result: true, data: r })
   } catch (error) {
     logger.error('web player set device error', error)
+    res.status(500).json({ error })
+  }
+})
+
+router.get('/setfullscreen', async (req, res) => {
+  try {
+    const r = await setFullScreen(req.query.fullscreen)
+    res.status(200).json({ ...r })
+  } catch (error) {
+    logger.error('web player set fullscreen error', error)
     res.status(500).json({ error })
   }
 })

@@ -9,6 +9,7 @@ global.pt = {
   currentTime: 0,
   remaining: 0
 }
+global.isFullscreen = false
 import './ipc'
 import './menu'
 import './web'
@@ -26,7 +27,7 @@ try {
 
 let mainWindow
 
-function createWindow() {
+async function createWindow() {
   /**
    * Initial window options
    */
@@ -58,6 +59,7 @@ function createWindow() {
   }
   logger.info('APP Started')
   setLocalFileProtocol()
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })
