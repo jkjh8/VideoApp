@@ -1,5 +1,6 @@
 import express from 'express'
 import { BrowserWindow as bw } from 'electron'
+import db from '/src-electron/db'
 import logger from '/src-electron/logger'
 import { pCommand, mainCommand } from '/src-electron/functions/webToIPC'
 import { openFile } from '/src-electron/functions/files'
@@ -138,11 +139,16 @@ router.get('/device', (req, res) => {
   }
 })
 
-router.post('/setDevice', (req, res) => {
+router.post('/setDevice', async (req, res) => {
   try {
     const { deviceId } = req.body
     pCommand({ command: 'setDevice', deviceId: deviceId })
-    res.status(200).json({ result: true })
+    const r = await db.update(
+      { key: 'device' },
+      { $set: { deviceId: deviceId } },
+      { upsert: true }
+    )
+    res.status(200).json({ result: true, data: r })
   } catch (error) {
     logger.error('web player set device error', error)
     res.status(500).json({ error })
