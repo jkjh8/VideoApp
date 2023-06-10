@@ -3,13 +3,21 @@ import path from 'path'
 import os from 'os'
 import logger from './logger'
 
-global.pv = {}
-global.pt = {
+global.pState= {
+  mode: 'single',
+  file: {},
+  status: {},
+  playlist: {},
+  device: {current : 'default', list: []},
+  fullscreen: false
+}
+global.pTimes = {
   duration: 0,
   currentTime: 0,
   remaining: 0
 }
-global.isFullscreen = false
+
+// global.isFullscreen = false
 import './ipc'
 import './menu'
 import './web'

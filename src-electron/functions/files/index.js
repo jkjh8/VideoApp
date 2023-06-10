@@ -63,8 +63,8 @@ const getMetaData = (file) => {
   ffmpeg.ffprobe(file, (err, meta) => {
     ffmpeg.ffprobe(file, (err, meta) => {
       if (err) reject(new Error('metadata read error'))
-      pv = { ...pv, ...meta }
-      io.emit('playerstate', pv)
+      pState.file = { ...pState.file, ...meta }
+      io.emit('status', pState)
       bw.fromId(1).webContents.send('updateState', pv)
     })
   })
@@ -78,37 +78,37 @@ const openFile = async (filePath) => {
     const fileExt = parsedFilePath.ext
 
     // update values
-    pv = {}
-    pv.name = fileName
-    pv.ext = fileExt
-    pv.src = encodedFilePath
+    pState.file.name = fileName
+    pState.file.ext = fileExt
+    pState.file.src = encodedFilePath
+    pStatus.file.filePath = filePath
 
     switch (fileExt) {
       case '.mp4':
       case '.mov':
       case '.mkv':
         getMetaData(filePath)
-        pv = { mode: 'video', filePath, ...pv }
+        pState.file.type = 'video'
         break
       case '.mp3':
       case '.wav':
         getMetaData(filePath)
-        pv = { mode: 'audio', filePath, ...pv }
+        pState.file.type = 'audio'
         break
       case '.jpg':
       case '.jpeg':
       case '.png':
       case '.bmp':
       case '.gif':
-        const dimensions = sizeOf(filePath)
-        pv = { mode: 'image', ...pv, ...dimensions }
+        pState.file.type  = 'image'
+        pState.dimensions = sizeOf(filePath)
     }
 
     // send player data to frontend
     bw.fromId(1).webContents.send('open', {
       src: encodedFilePath,
-      mode: pv.mode,
-      values: pv
+      type: pState.file.type,
+      values: pState
     })
     //update db
     db.update(
@@ -116,6 +116,7 @@ const openFile = async (filePath) => {
       { $set: { source: filePath } },
       { upsert: true }
     )
+    io.emit('status', pState)
   } catch (error) {
     console.error(error)
   }

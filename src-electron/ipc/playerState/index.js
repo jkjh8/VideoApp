@@ -45,9 +45,11 @@ ipcMain.on('updateState', (e, args) => {
       })
       break
     case 'devices':
+      pStatus.device.list = args.devices
       io.emit('devices', args.devices)
       break
     case 'device':
+      pStatus.device.current = args.device
       io.emit('device', { device: args.device })
       break
     default:
@@ -61,7 +63,7 @@ ipcMain.on('updateState', (e, args) => {
 const upv = (args) => {
   for (const key in args) {
     if (key != 'type') {
-      pv[key] = args[key]
+      pState.status[key] = args[key]
     }
   }
   io.emit('playerstate', pv)
@@ -70,7 +72,7 @@ const upv = (args) => {
 const upt = (args) => {
   for (const key in args) {
     if (key != 'type') {
-      pt[key] = args[key]
+      pTimes[key] = args[key]
     }
   }
   io.emit('times', pt)

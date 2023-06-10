@@ -12,7 +12,7 @@ const audioSource = ref('')
 onMounted(() => {
   myAPI.open((args) => {
     pStatus.value = { ...args.values }
-    switch (args.mode) {
+    switch (args.type) {
       case 'video':
         // pMode.value = 'video'
         videoSource.value = `local://${args.src}`
@@ -28,7 +28,7 @@ onMounted(() => {
     }
     console.log(pMode.value)
   })
-  myAPI.rtpv((args) => {
+  myAPI.rtpState((args) => {
     pStatus.value = args
   })
   myAPI.command((args) => {

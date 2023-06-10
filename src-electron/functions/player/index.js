@@ -9,7 +9,7 @@ const setFullScreen = async (value) => {
     fullscreen = false
   }
   bw.fromId(1).setFullScreen(fullscreen)
-  io.emit('fullscreen', { fullscreen: fullscreen })
+  io.emit('status', { fullscreen: fullscreen })
   return await db.update(
     { key: 'fullscreen' },
     { $set: { value: fullscreen } },
