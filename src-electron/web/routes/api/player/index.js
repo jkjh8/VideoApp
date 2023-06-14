@@ -11,20 +11,24 @@ const router = express.Router()
 router.get('/play', (req, res) => {
   try {
     let rt
-    console.log(pv)
-    switch (pv.mode) {
+    switch (pState.file.type) {
       case 'video':
       case 'audio':
-        switch (pv.status) {
+        switch (pState.status.status) {
           case 'ready':
           case 'paused':
           case 'ended':
           case 'stop':
             pCommand({ command: 'play' })
-            rt = { command: 'play', mode: pv.mode, result: 'playing' }
+            mainCommand({ command: 'play' })
+            rt = { command: 'play', mode: pState.mode, result: 'playing' }
             break
           default:
-            rt = { command: 'play', mode: pv.mode, result: 'player not ready' }
+            rt = {
+              command: 'play',
+              mode: pState.mode,
+              result: 'player not ready'
+            }
             break
         }
         break
@@ -40,14 +44,14 @@ router.get('/play', (req, res) => {
 router.get('/pause', (req, res) => {
   try {
     let rt
-    switch (pv.mode) {
+    switch (pState.file.type) {
       case 'video':
       case 'audio':
-        if (pv.status === 'play') {
+        if (pState.status.status === 'play') {
           pCommand({ command: 'pause' })
-          rt = { command: 'pause', mode: pv.mode, result: 'paused' }
+          rt = { command: 'pause', mode: pState.mode, result: 'paused' }
         } else {
-          rt = { command: 'pause', mode: pv.mode, result: 'not playing' }
+          rt = { command: 'pause', mode: pState.mode, result: 'not playing' }
         }
         break
     }
@@ -62,13 +66,13 @@ router.get('/pause', (req, res) => {
 router.get('/stop', (req, res) => {
   try {
     let rt
-    switch (pv.mode) {
+    switch (pState.file.type) {
       case 'video':
       case 'audio':
         // pCommand({ command: 'load' })
         pCommand({ command: 'pause' })
         pCommand({ command: 'seek', seekTime: 0 })
-        rt = { command: 'stop', mode: pv.mode, result: 'load or stop' }
+        rt = { command: 'stop', mode: pState.mode, result: 'load or stop' }
         break
     }
     logger.info('web player stop', JSON.stringify(rt))
@@ -86,12 +90,12 @@ router.get('/stop', (req, res) => {
 router.get('/loadfile', (req, res) => {
   try {
     const file = decodeURI(req.query.file)
-    if (pv.filePath === file) {
+    if (pState.file.filePath === file) {
       pCommand({ command: 'load' })
     } else {
       openFile(file)
     }
-    pv.status = 'ready'
+    pState.status.status = 'ready'
     logger.info(`web loaded file: ${file}`)
     res.status(200).json({ result: true })
   } catch (error) {

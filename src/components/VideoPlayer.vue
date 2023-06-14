@@ -69,7 +69,7 @@ onMounted(async () => {
   pCallback(obj)
 
   // player Commands
-  myAPI.pc((args) => {
+  myAPI.pCommand((args) => {
     pCommands(obj, args)
   })
 })

@@ -26,15 +26,16 @@ onMounted(() => {
         imageSource.value = `local://${args.src}`
         break
     }
-    console.log(pMode.value)
+    console.log('mode', pMode.value)
   })
   myAPI.rtpState((args) => {
     pStatus.value = args
+    console.log('status', pStatus.value)
   })
   myAPI.command((args) => {
     switch (args.command) {
-      case 'mode':
-        pMode.value = args.value
+      case 'play':
+        pMode.value = pStatus.value.file.type
         break
       case 'ended':
         pMode.value = 'logo'
@@ -43,6 +44,7 @@ onMounted(() => {
         pMode.value = 'logo'
         break
     }
+    console.log('command', args)
   })
 })
 </script>

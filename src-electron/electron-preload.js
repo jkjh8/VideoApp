@@ -24,7 +24,8 @@ contextBridge.exposeInMainWorld('myAPI', {
     })
   },
   pCommand: (fn) => {
-    ipcRenderer.on('pc', (e, ...args) => {
+    ipcRenderer.on('pCommand', (e, ...args) => {
+      console.log(args)
       fn(...args)
     })
   },

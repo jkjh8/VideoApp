@@ -1,7 +1,8 @@
 import { BrowserWindow as bw } from 'electron'
 
 const pCommand = (args) => {
-  bw.fromId(1).webContents.send('pc', { ...args })
+  console.log('webto', args)
+  bw.fromId(1).webContents.send('pCommand', { ...args })
 }
 
 const mainCommand = (args) => {

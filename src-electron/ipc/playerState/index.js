@@ -17,7 +17,7 @@ ipcMain.on('updateState', (e, args) => {
       logger.info(`${args.type}: ${args.volume}`)
       break
     case 'timeupdate':
-      upv({ status: 'play' })
+      // upv({ status: 'play' })
       upt(args)
       break
     case 'durationchange':
@@ -27,7 +27,7 @@ ipcMain.on('updateState', (e, args) => {
     case 'playing':
     case 'play':
       upv(args)
-      logger.info(`${args.type} file: ${pv.name}`)
+      logger.info(`${args.type} file: ${pState.file.name}`)
       break
     case 'error':
       logger.error(`player error: ${args.value}`)
@@ -45,19 +45,18 @@ ipcMain.on('updateState', (e, args) => {
       })
       break
     case 'devices':
-      pStatus.device.list = args.devices
+      pState.device.list = args.devices
       io.emit('devices', args.devices)
       break
     case 'device':
-      pStatus.device.current = args.device
+      pState.device.current = args.device
       io.emit('device', { device: args.device })
       break
     default:
-      upv(args)
+      // upv(args)
       // logger.info(args.type)
       break
   }
-  bw.fromId(1).webContents.send('rtpv', pv)
 })
 
 const upv = (args) => {
@@ -66,7 +65,8 @@ const upv = (args) => {
       pState.status[key] = args[key]
     }
   }
-  io.emit('playerstate', pv)
+  io.emit('playerstate', pState)
+  bw.fromId(1).webContents.send('rtpState', pState)
 }
 
 const upt = (args) => {
@@ -75,5 +75,6 @@ const upt = (args) => {
       pTimes[key] = args[key]
     }
   }
-  io.emit('times', pt)
+  pState.status.status = 'play'
+  io.emit('times', pTimes)
 }

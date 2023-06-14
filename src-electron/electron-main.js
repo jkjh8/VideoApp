@@ -3,12 +3,12 @@ import path from 'path'
 import os from 'os'
 import logger from './logger'
 
-global.pState= {
+global.pState = {
   mode: 'single',
   file: {},
   status: {},
   playlist: {},
-  device: {current : 'default', list: []},
+  device: { current: 'default', list: [] },
   fullscreen: false
 }
 global.pTimes = {

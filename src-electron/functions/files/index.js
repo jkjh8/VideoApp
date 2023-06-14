@@ -65,7 +65,7 @@ const getMetaData = (file) => {
       if (err) reject(new Error('metadata read error'))
       pState.file = { ...pState.file, ...meta }
       io.emit('status', pState)
-      bw.fromId(1).webContents.send('updateState', pv)
+      bw.fromId(1).webContents.send('updateState', pState)
     })
   })
 }
@@ -81,7 +81,7 @@ const openFile = async (filePath) => {
     pState.file.name = fileName
     pState.file.ext = fileExt
     pState.file.src = encodedFilePath
-    pStatus.file.filePath = filePath
+    pState.file.filePath = filePath
 
     switch (fileExt) {
       case '.mp4':
@@ -100,7 +100,7 @@ const openFile = async (filePath) => {
       case '.png':
       case '.bmp':
       case '.gif':
-        pState.file.type  = 'image'
+        pState.file.type = 'image'
         pState.dimensions = sizeOf(filePath)
     }
 
