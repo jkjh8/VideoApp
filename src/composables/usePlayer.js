@@ -57,7 +57,7 @@ const pCallback = (obj) => {
   obj.onloadstart = (e) =>
     upv({ type: 'loadstart', status: 'stop', readyState: obj.readyState })
   obj.onpause = (e) =>
-    upv({ type: 'pause', status: 'paused', readyState: obj.readyState })
+    upv({ type: 'paused', status: 'paused', readyState: obj.readyState })
   obj.onplay = (e) =>
     upv({ type: 'play', status: 'play', readyState: obj.readyState })
   // obj.onprogress = (e) => upv({ type: 'progress', value: e.target.value })

@@ -26,6 +26,7 @@ ipcMain.on('updateState', (e, args) => {
       break
     case 'playing':
     case 'play':
+    case 'paused':
       upv(args)
       logger.info(`${args.type} file: ${pState.file.name}`)
       break
@@ -38,7 +39,6 @@ ipcMain.on('updateState', (e, args) => {
       break
     case 'ended':
       upv({ ...args, playbtn: false, status: 'ended' })
-      logger.info(args.type)
       bw.fromId(1).webContents.send('command', {
         command: 'ended',
         mode: pState.status.status
@@ -65,7 +65,7 @@ const upv = (args) => {
       pState.status[key] = args[key]
     }
   }
-  io.emit('playerstate', pState)
+  io.emit('status', pState)
   bw.fromId(1).webContents.send('rtpState', pState)
 }
 
@@ -75,6 +75,8 @@ const upt = (args) => {
       pTimes[key] = args[key]
     }
   }
-  pState.status.status = 'play'
+  if (pTimes.currentTime) {
+    pState.status.status = 'play'
+  }
   io.emit('times', pTimes)
 }

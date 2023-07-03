@@ -69,11 +69,15 @@ router.get('/stop', (req, res) => {
     switch (pState.file.type) {
       case 'video':
       case 'audio':
-        // pCommand({ command: 'load' })
-        pCommand({ command: 'pause' })
-        pCommand({ command: 'seek', seekTime: 0 })
-        rt = { command: 'stop', mode: pState.mode, result: 'load or stop' }
-        break
+        switch (pState.status.status) {
+          case 'playing':
+          case 'play':
+            // pCommand({ command: 'load' })
+            pCommand({ command: 'pause' })
+            pCommand({ command: 'seek', seekTime: 0 })
+            rt = { command: 'stop', mode: pState.mode, result: 'load or stop' }
+            break
+        }
     }
     logger.info('web player stop', JSON.stringify(rt))
 
