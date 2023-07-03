@@ -41,7 +41,7 @@ ipcMain.on('updateState', (e, args) => {
       logger.info(args.type)
       bw.fromId(1).webContents.send('command', {
         command: 'ended',
-        mode: pv.mode
+        mode: pState.status.status
       })
       break
     case 'devices':

@@ -61,12 +61,11 @@ const getMetaDataPromise = (file) => {
 
 const getMetaData = (file) => {
   ffmpeg.ffprobe(file, (err, meta) => {
-    ffmpeg.ffprobe(file, (err, meta) => {
-      if (err) reject(new Error('metadata read error'))
-      pState.file = { ...pState.file, ...meta }
-      io.emit('status', pState)
-      bw.fromId(1).webContents.send('updateState', pState)
-    })
+    if (err) reject(new Error('metadata read error'))
+    pState.file.meta = meta
+    io.emit('status', pState)
+    bw.fromId(1).webContents.send('updateState', pState)
+    console.log('emit data')
   })
 }
 
