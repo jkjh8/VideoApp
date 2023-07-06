@@ -18,8 +18,10 @@ const pCommands = async (obj, args) => {
       }
       break
     case 'play':
-      pMode.value = pStatus.value.mode
-      obj.play()
+      // pMode.value = pStatus.value.file.type
+      if (pStatus.value.file.type !== 'image') {
+        obj.play()
+      }
       break
     case 'pause':
       obj.pause()

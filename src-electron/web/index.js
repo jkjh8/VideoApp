@@ -62,7 +62,6 @@ app.use('/', routes)
 
 // socket.io events
 io.on('connection', (socket) => {
-  console.log(pState)
   io.emit('playerstate', pState)
   io.emit('times', pTimes)
   pCommand({ command: 'devices' })

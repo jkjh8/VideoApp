@@ -2,13 +2,18 @@
 import { onMounted } from 'vue'
 import { bgColor } from 'src/composables/usePlayer.js'
 
+const fnUpdateWindowSize = () => {
+  myAPI.updateWindowSize({
+    height: window.innerHeight,
+    width: window.innerWidth
+  })
+}
+
 onMounted(() => {
   window.addEventListener('resize', () => {
-    myAPI.updateWindowSize({
-      height: window.innerHeight,
-      width: window.innerWidth
-    })
+    fnUpdateWindowSize()
   })
+  fnUpdateWindowSize()
 })
 </script>
 

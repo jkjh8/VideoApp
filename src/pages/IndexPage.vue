@@ -11,22 +11,23 @@ const audioSource = ref('')
 
 onMounted(() => {
   myAPI.open((args) => {
-    pStatus.value = { ...args.values }
-    switch (args.type) {
-      case 'video':
-        // pMode.value = 'video'
-        videoSource.value = `local://${args.src}`
-        break
-      case 'audio':
-        // pMode.value = 'audio' // audio mode
-        videoSource.value = `local://${args.src}`
-        break
-      case 'image':
-        // pMode.value = 'image'
-        imageSource.value = `local://${args.src}`
-        break
+    try {
+      pStatus.value = { ...args.values }
+      console.log('load', args)
+      switch (args.type) {
+        case 'video':
+        case 'audio':
+          videoSource.value = `local://${args.src}`
+          break
+        case 'image':
+          // pMode.value = 'image'
+          imageSource.value = `local://${args.src}`
+          break
+      }
+      console.log('mode', pMode.value)
+    } catch (err) {
+      console.error('open file error', err)
     }
-    console.log('mode', pMode.value)
   })
   myAPI.rtpState((args) => {
     pStatus.value = args

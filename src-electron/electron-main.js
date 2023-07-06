@@ -1,15 +1,18 @@
 import { app, BrowserWindow, nativeTheme, protocol } from 'electron'
 import path from 'path'
 import os from 'os'
+import db from './db'
 import logger from './logger'
+import { updateSetupFromDb } from './functions/player'
 
 global.pState = {
   mode: 'single',
   file: {},
   status: {},
   playlist: {},
-  device: { current: 'default', list: [] },
-  fullscreen: false
+  device: { current: 'default', list: [], width: 0, height: 0 },
+  fullscreen: false,
+  showlogo: true
 }
 global.pTimes = {
   duration: 0,
@@ -36,15 +39,16 @@ try {
 let mainWindow
 
 async function createWindow() {
-  /**
-   * Initial window options
-   */
+  // before create window options
+  await updateSetupFromDb()
+  logger.info(`window size: ${pState.device.width} x ${pState.device.height}`)
+  // create a window
   mainWindow = new BrowserWindow({
     icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
     x: 100,
     y: 100,
-    width: 1200,
-    height: 600,
+    width: pState.device.width ? pState.device.width : 800,
+    height: pState.device.height ? pState.device.height : 600,
     useContentSize: true,
     webPreferences: {
       contextIsolation: true,

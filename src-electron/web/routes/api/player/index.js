@@ -14,6 +14,7 @@ router.get('/play', (req, res) => {
     switch (pState.file.type) {
       case 'video':
       case 'audio':
+      case 'image':
         switch (pState.status.status) {
           case 'ready':
           case 'paused':
@@ -93,6 +94,8 @@ router.get('/stop', (req, res) => {
 
 router.get('/loadfile', (req, res) => {
   try {
+    pCommand({ command: 'pause' })
+    mainCommand({ command: 'showLogo' })
     const file = decodeURI(req.query.file)
     if (pState.file.filePath === file) {
       pCommand({ command: 'load' })

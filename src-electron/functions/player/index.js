@@ -17,4 +17,23 @@ const setFullScreen = async (value) => {
   )
 }
 
-export { setFullScreen }
+const updateSetupFromDb = async () => {
+  const setupVal = await db.find({})
+
+  for (let i = 0; i < setupVal.length; i++) {
+    switch (setupVal[i].key) {
+      case 'showlogo':
+        pState.showlogo = setupVal[i].value
+        break
+      case 'windowSize':
+        pState.device.width = setupVal[i].width
+        pState.device.height = setupVal[i].height
+        break
+      case 'fullscreen':
+        pState.fullscreen = setupVal[i].value
+        break
+    }
+  }
+}
+
+export { setFullScreen, updateSetupFromDb }
