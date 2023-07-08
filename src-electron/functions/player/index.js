@@ -2,17 +2,21 @@ import { BrowserWindow as bw } from 'electron'
 import db from '/src-electron/db'
 
 const setFullScreen = async (value) => {
-  let fullscreen
-  if (value == true) {
-    fullscreen = true
+  pState.fullscreen = !pState.fullscreen
+  // goto fullscreen
+  bw.fromId(1).setFullScreen(pState.fullscreen)
+  // hide menu
+  if (pState.fullscreen) {
+    bw.fromId(1).setMenuBarVisibility(false)
   } else {
-    fullscreen = false
+    bw.fromId(1).setMenuBarVisibility(true)
   }
-  bw.fromId(1).setFullScreen(fullscreen)
-  io.emit('status', { fullscreen: fullscreen })
+  // share status
+  io.emit('status', pState)
+  // updat db
   return await db.update(
     { key: 'fullscreen' },
-    { $set: { value: fullscreen } },
+    { $set: { value: pState.fullscreen } },
     { upsert: true }
   )
 }

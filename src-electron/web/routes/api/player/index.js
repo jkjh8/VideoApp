@@ -131,42 +131,6 @@ router.get('/rewind', (req, res) => {
   }
 })
 
-router.get('/devices', (req, res) => {
-  try {
-    pCommand({ command: 'devices' })
-    res.status(200).json({ result: true })
-  } catch (error) {
-    logger.error('web player devices error', error)
-    res.status(500).json({ error })
-  }
-})
-
-router.get('/device', (req, res) => {
-  try {
-    pCommand({ command: 'device' })
-    res.status(200).json({ result: true })
-  } catch (error) {
-    logger.error('web player device error', error)
-    res.status(500).json({ error })
-  }
-})
-
-router.post('/setDevice', async (req, res) => {
-  try {
-    const { deviceId } = req.body
-    pCommand({ command: 'setDevice', deviceId: deviceId })
-    const r = await db.update(
-      { key: 'device' },
-      { $set: { deviceId: deviceId } },
-      { upsert: true }
-    )
-    res.status(200).json({ result: true, data: r })
-  } catch (error) {
-    logger.error('web player set device error', error)
-    res.status(500).json({ error })
-  }
-})
-
 router.get('/setfullscreen', async (req, res) => {
   try {
     const r = await setFullScreen(req.query.fullscreen)

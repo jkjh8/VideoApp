@@ -30,4 +30,65 @@ router.put('/showlogo', async (req, res) => {
   }
 })
 
+router.get('/devices', (req, res) => {
+  try {
+    pCommand({ command: 'devices' })
+    res.status(200).json({ result: true })
+  } catch (error) {
+    logger.error('web player devices error', error)
+    res.status(500).json({ error })
+  }
+})
+
+router.get('/device', (req, res) => {
+  try {
+    pCommand({ command: 'device' })
+    res.status(200).json({ result: true })
+  } catch (error) {
+    logger.error('web player device error', error)
+    res.status(500).json({ error })
+  }
+})
+
+router.post('/setDevice', async (req, res) => {
+  try {
+    const { deviceId } = req.body
+    pCommand({ command: 'setDevice', deviceId: deviceId })
+    const r = await db.update(
+      { key: 'device' },
+      { $set: { deviceId: deviceId } },
+      { upsert: true }
+    )
+    res.status(200).json({ result: true, data: r })
+  } catch (error) {
+    logger.error('web player set device error', error)
+    res.status(500).json({ error })
+  }
+})
+
+router.get('/startfullscreen', async (req, res) => {
+  try {
+    const r = await db.findOne({ key: 'startfullscreen' })
+    res.status(200).json({ result: true, data: r })
+  } catch (error) {
+    logger.error('web player set start fullscreen error', error)
+    res.status(500).json({ error })
+  }
+})
+
+router.put('/startfullscreen', async (req, res) => {
+  try {
+    console.log(req.body)
+    const r = await db.update(
+      { key: 'startfullscreen' },
+      { $set: { value: req.body.startfullscreen } },
+      { upsert: true }
+    )
+    res.status(200).json({ result: true, data: r })
+  } catch (error) {
+    logger.error('web player set start fullscreen error', error)
+    res.status(500).json({ error })
+  }
+})
+
 export default router
