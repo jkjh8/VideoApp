@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { fnShowlogo } from './usePlayerCommands'
 
 const pStatus = ref({})
 const pMode = ref('logo')
@@ -21,6 +22,7 @@ const pCallback = (obj) => {
     upv({ type: 'playing', status: 'play', readyState: obj.readyState })
   obj.onabort = () =>
     upv({ type: 'abort', status: 'stop', readyState: obj.readyState })
+  fnShowlogo()
   obj.canplay = (e) =>
     upv({ type: 'canplay', status: 'ready', readyState: obj.readyState })
   obj.oncanplaythrough = (e) =>
@@ -36,6 +38,7 @@ const pCallback = (obj) => {
   obj.onencrypted = () => upv({ type: 'encrypted', readyState: obj.readyState })
   obj.onended = () =>
     upv({ type: 'ended', status: 'ended', readyState: obj.readyState })
+  fnShowlogo()
   obj.onerror = (e) =>
     upv({ type: 'error', errpr: obj.error, readyState: obj.readyState })
   obj.onloadeddata = (e) =>
@@ -54,6 +57,7 @@ const pCallback = (obj) => {
       readyState: obj.readyState,
       sinkId: obj.sinkId
     })
+
   obj.onloadstart = (e) =>
     upv({ type: 'loadstart', status: 'stop', readyState: obj.readyState })
   obj.onpause = (e) =>

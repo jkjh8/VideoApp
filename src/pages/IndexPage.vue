@@ -13,7 +13,6 @@ onMounted(() => {
   myAPI.open((args) => {
     try {
       pStatus.value = { ...args.values }
-      console.log('load', args)
       switch (args.type) {
         case 'video':
         case 'audio':
@@ -31,7 +30,6 @@ onMounted(() => {
   })
   myAPI.rtpState((args) => {
     pStatus.value = args
-    console.log('status', pStatus.value)
   })
   myAPI.command((args) => {
     switch (args.command) {

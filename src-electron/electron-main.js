@@ -12,6 +12,7 @@ global.pState = {
   playlist: {},
   device: { current: 'default', list: [], width: 0, height: 0 },
   fullscreen: false,
+  startfullscreen: false,
   showlogo: true
 }
 global.pTimes = {
@@ -42,6 +43,7 @@ async function createWindow() {
   // before create window options
   await updateSetupFromDb()
   logger.info(`window size: ${pState.device.width} x ${pState.device.height}`)
+
   // create a window
   mainWindow = new BrowserWindow({
     icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
@@ -75,6 +77,12 @@ async function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  // check option fullscreen start
+  if (pState.startfullscreen) {
+    pState.fullscreen = true
+    logger.info('fullscreen start')
+  }
 }
 
 app.on('ready', () => {

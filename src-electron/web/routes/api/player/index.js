@@ -21,7 +21,7 @@ router.get('/play', (req, res) => {
           case 'ended':
           case 'stop':
             pCommand({ command: 'play' })
-            mainCommand({ command: 'play' })
+            // mainCommand({ command: 'play' })
             rt = { command: 'play', mode: pState.mode, result: 'playing' }
             break
           default:
@@ -74,8 +74,7 @@ router.get('/stop', (req, res) => {
           case 'playing':
           case 'play':
             // pCommand({ command: 'load' })
-            pCommand({ command: 'pause' })
-            pCommand({ command: 'seek', seekTime: 0 })
+            pCommand({ command: 'stop' })
             rt = { command: 'stop', mode: pState.mode, result: 'load or stop' }
             break
         }
@@ -83,7 +82,7 @@ router.get('/stop', (req, res) => {
     logger.info('web player stop', JSON.stringify(rt))
 
     // show logo
-    mainCommand({ command: 'showLogo' })
+    // mainCommand({ command: 'showLogo' })
 
     return res.status(200).json(rt)
   } catch (error) {

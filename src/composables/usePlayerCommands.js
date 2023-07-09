@@ -19,17 +19,34 @@ const pCommands = async (obj, args) => {
       break
     case 'play':
       // pMode.value = pStatus.value.file.type
-      if (pStatus.value.file.type !== 'image') {
-        obj.play()
+      pMode.value = pStatus.value.file.type
+      switch (pStatus.value.file.type) {
+        case 'audio':
+          // logo or etc logic is required
+          obj.play()
+          break
+        case 'video':
+          pMode.value = 'video'
+          obj.play()
+          break
+        case 'image':
+          // image show logic is required
+          break
       }
       break
     case 'pause':
       obj.pause()
       break
     case 'stop':
+      obj.pause()
+      obj.currentTime = 0
+      fnShowlogo()
+      break
     case 'load':
       obj.pause()
       obj.load()
+      // showlogo
+      fnShowlogo()
       break
     case 'clear':
       obj.src = null
@@ -52,5 +69,15 @@ const pCommands = async (obj, args) => {
       break
   }
 }
-
-export { pCommands }
+const fnShowlogo = () => {
+  try {
+    if (pStatus.value.showlogo) {
+      pMode.value = 'logo'
+    } else {
+      pMode.value = pStatus.value.file.type
+    }
+  } catch (error) {
+    logger.error('showlogo error', error)
+  }
+}
+export { pCommands, fnShowlogo }
